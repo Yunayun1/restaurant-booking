@@ -96,7 +96,7 @@ export default function LandingPage() {
   const router = useRouter();
 
   const handleBookNowClick = () => {
-    router.push("/auth");
+    router.push("/auth/login");
   };
 
   return (
