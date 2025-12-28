@@ -18,6 +18,7 @@
         "name": "next"
       }
     ],
+    // This is correct: it sets the '@/' alias to the project root './'
     "paths": {
       "@/*": ["./*"]
     }
