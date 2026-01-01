@@ -1,5 +1,3 @@
-// app/auth/login/LoginPage.tsx
-
 "use client";
 
 import { useState } from "react";
@@ -36,8 +34,11 @@ export default function LoginPage() {
         })
       );
 
-      // ✅ REDIRECT TO HOMEPAGE
-      router.push("/landing");
+      // ✅ REDIRECT TO ORIGINAL PAGE OR HOMEPAGE
+      const redirectPath = localStorage.getItem("redirectAfterLogin") || "/landing";
+      localStorage.removeItem("redirectAfterLogin");
+      router.push(redirectPath); // ← key change here
+
     } catch (err: any) {
       setError(err.message || "Login failed. Please check your credentials.");
     }

@@ -1,293 +1,268 @@
-// app/landing/LandingPage.tsx
-
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Menu, Search, Phone, Mail, MapPin, Link as LinkIcon, LucideProps } from "lucide-react";
-import TopBar from "./TopBar"; 
+import { 
+  Phone, Mail, MapPin, Clock, 
+  ChevronRight, Facebook, Instagram, Twitter 
+} from "lucide-react";
+import TopBar from "./TopBar";
 
-/**
- * 🎨 Global/Reusable Styles & Constants
- */
 const styles = {
-  primaryTextColor: "#212121",
-  accentButtonColor: "#ffb400",
-  // Base styles for main content container
-  mainContentContainer: {
-    padding: "60px",
-    width: "100%",
-    maxWidth: "1200px",
-    margin: "0 auto",
-    fontFamily: "sans-serif",
-    color: "#212121",
-  } as React.CSSProperties, // Cast to CSSProperties for full type safety
-  // Base style for buttons
+  primaryTextColor: "#1a1a1a",
+  accentColor: "#ffb400",
+  secondaryTextColor: "#64748b",
+  
+  card: {
+    backgroundColor: "#ffffff",
+    borderRadius: "24px",
+    padding: "35px",
+    boxShadow: "0 10px 40px rgba(0,0,0,0.03)",
+    border: "1px solid #f1f5f9",
+    transition: "transform 0.3s ease",
+  } as React.CSSProperties,
+
   primaryButton: {
     backgroundColor: "#ffb400",
-    padding: "15px 35px",
-    borderRadius: "5px",
+    padding: "18px 45px",
+    borderRadius: "14px",
     border: "none",
-    fontSize: "1.2rem",
-    fontWeight: "600",
+    fontSize: "1.1rem",
+    fontWeight: "700",
     cursor: "pointer",
-    color: "#212121",
-    transition: "background-color 0.3s ease",
+    color: "#1a1a1a",
+    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+    boxShadow: "0 10px 25px rgba(255, 180, 0, 0.25)",
   } as React.CSSProperties,
-  // Style for all major headings
+
   sectionHeading: {
-    fontSize: "1.5rem", 
-    fontWeight: "bold", 
-    marginBottom: "20px"
+    fontSize: "2.2rem",
+    fontWeight: "900",
+    marginBottom: "16px",
+    letterSpacing: "-0.03em",
+    color: "#1a1a1a",
   } as React.CSSProperties
 };
 
-/**
- * 🖼️ Static Data
- */
-const galleryImages = [
-  "/res1.jpg",
-  "/res2.jpg",
-  "/res3.jpg",
-  "/res4.jpg",
-  "/res5.jpg",
-  "/res6.jpg",
-];
-
 const hoursData = [
-  { day: "Mon", open: "9 am", close: "8 pm" },
-  { day: "Tue", open: "9 am", close: "8 pm" },
-  { day: "Wed", open: "9 am", close: "8 pm" },
-  { day: "Thu", open: "9 am", close: "8 pm" },
-  { day: "Fri", open: "9 am", close: "8 pm" },
-  { day: "Sat", open: "-", close: "-" },
-  { day: "Sun", open: "-", close: "-" },
+  { day: "Monday - Friday", time: "9:00 AM - 8:00 PM", active: true },
+  { day: "Saturday", time: "Closed", active: false },
+  { day: "Sunday", time: "Closed", active: false },
 ];
 
 const contactData = [
-    { icon: Phone, text: "+855 123456789", label: "Phone" },
-    { icon: Mail, text: "bookinres@gmail.com", label: "Email" },
-    { icon: MapPin, text: "123 Phnom Penh", label: "Address" },
-    { icon: LinkIcon, text: "nichaikoleminive2.zm.memosh.notendo.com.ua", label: "Website" },
+  { icon: Phone, text: "+855 123 456 789", label: "Phone" },
+  { icon: Mail, text: "bookinres@gmail.com", label: "Email" },
+  { icon: MapPin, text: "123 Phnom Penh, Cambodia", label: "Address" },
 ];
 
-/**
- * 💡 Prop Types for the custom Icon component
- */
-interface IconProps {
-  IconComponent: React.FC<LucideProps>; 
-  size?: number;
-  color?: string;
-  style?: React.CSSProperties;
-}
-
-
-/**
- * 💡 Custom Icon Component (Type-Safe)
- */
-const Icon: React.FC<IconProps> = ({ IconComponent, size = 20, color = styles.primaryTextColor, style = {} }) => (
-    <IconComponent size={size} color={color} style={{ marginRight: '8px', minWidth: `${size}px`, ...style }} />
-);
-
-
-/**
- * 💻 Main Component
- */
 export default function LandingPage() {
   const router = useRouter();
-
-  const handleBookNowClick = () => {
-    router.push("/auth/login");
-  };
+  const [hoveredImg, setHoveredImg] = useState<number | null>(null);
 
   return (
-    <div
-      style={{
-        width: "100%",
-        minHeight: "100vh",
-        backgroundColor: "white",
-        overflowX: "hidden",
-      }}
-    >
-      {/* 👈 RENDER THE TOPBAR HERE */}
-      <TopBar /> 
+    <div style={{ backgroundColor: "#fdfdfd", minHeight: "100vh", fontFamily: "'Inter', sans-serif" }}>
+      <TopBar />
 
-      {/* 🌟 HERO SECTION */}
-      <div
-        style={{
+      {/* 🌟 CENTERED HERO SECTION */}
+      <div style={{ 
+        position: "relative", 
+        height: "90vh", 
+        overflow: "hidden", 
+        display: "flex", 
+        alignItems: "center", 
+        justifyContent: "center" 
+      }}>
+        {/* Background Image with Overlay */}
+        <div style={{
+          position: "absolute", inset: 0,
           backgroundImage: "url('/image.jpg')",
-          backgroundSize: "cover",
+          backgroundSize: "cover", 
           backgroundPosition: "center",
-          height: "600px", 
-          position: "relative",
-          color: "white",
+          filter: "brightness(0.55)"
+        }} />
+        
+        {/* Hero Content Wrapper */}
+        <div style={{ 
+          position: "relative", 
+          zIndex: 10, 
+          width: "100%", 
+          maxWidth: "900px", 
+          margin: "0 auto", 
+          padding: "0 20px",
+          textAlign: "center",
           display: "flex",
           flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          padding: "0 20px",
-        }}
-      >
-        
-        {/* BLUR OVERLAY (z-index: 5) */}
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            background: "rgba(0,0,0,0.3)",
-            backdropFilter: "blur(4px)",
-            WebkitBackdropFilter: "blur(4px)",
-            zIndex: 5,
-          }}
-        ></div>
-
-        {/* ❌ OLD TOP NAVIGATION CODE REMOVED HERE ❌ */}
-
-
-        {/* Vertical HOME text (z-index: 10) */}
-        <div
-          style={{
-            position: "absolute",
-            top: "50%",
-            left: "10px",
-            transform: "translateY(-50%) rotate(-90deg)",
-            transformOrigin: "bottom left",
-            letterSpacing: "0.2em",
-            fontSize: "0.9rem",
-            fontWeight: "600",
-            zIndex: 10, 
-          }}
-        >
-          HOME
-        </div>
-
-        {/* Title + Button (z-index: 10) */}
-        <div style={{ zIndex: 10, textAlign: "center" }}> 
-          <h1
-            style={{
-              fontSize: "4rem",
-              fontWeight: "700",
-              maxWidth: "800px",
-              textAlign: "center",
-              textShadow: "2px 2px 4px rgba(0,0,0,0.8)",
+          alignItems: "center"
+        }}>
+          <span style={{ 
+            color: styles.accentColor, 
+            fontWeight: "800", 
+            letterSpacing: "4px", 
+            fontSize: "0.85rem",
+            marginBottom: "15px",
+            display: "block"
+          }}>
+            PREMIUM EXPERIENCE
+          </span>
+          
+          <h1 style={{ 
+            fontSize: "clamp(2.5rem, 8vw, 4.5rem)", 
+            fontWeight: "900", 
+            color: "white", 
+            lineHeight: "1.1", 
+            marginBottom: "24px",
+            textShadow: "0 4px 30px rgba(0,0,0,0.2)"
+          }}>
+            Taste the <span style={{ color: styles.accentColor }}>Extraordinary</span>
+          </h1>
+          
+          <p style={{ 
+            color: "rgba(255,255,255,0.9)", 
+            fontSize: "clamp(1rem, 4vw, 1.25rem)", 
+            marginBottom: "48px", 
+            lineHeight: "1.7",
+            maxWidth: "650px"
+          }}>
+            Experience world-class dining with the easiest reservation system in Phnom Penh. 
+            Join us for an unforgettable culinary journey.
+          </p>
+          
+          {/* ✅ UPDATED BUTTON WITH REDIRECT LOGIC */}
+          <button 
+            onClick={() => {
+              localStorage.setItem("redirectAfterLogin", "/booking");
+              router.push("/auth/login");
+            }}
+            style={styles.primaryButton}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "translateY(-5px)";
+              e.currentTarget.style.backgroundColor = "#f0a600";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.backgroundColor = styles.accentColor;
             }}
           >
-            Restaurants Booking Website
-          </h1>
-
-          <button
-            onClick={handleBookNowClick}
-            style={styles.primaryButton}
-            // Added professional hover effect
-            onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#f0a600')} 
-            onMouseOut={(e) => (e.currentTarget.style.backgroundColor = styles.accentButtonColor)}
-          >
-            Book now
+            Book Now <ChevronRight size={22} />
           </button>
         </div>
-      </div>
-      
-      {/* 📋 MAIN CONTENT SECTION */}
-      <div style={styles.mainContentContainer}>
-        
-        {/* HOURS & ABOUT GRID */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "2fr 1fr",
-            gap: "40px",
-          }}
-        >
-          {/* Hours */}
-          <div>
-            <h3 style={styles.sectionHeading}>Hours</h3>
-            <table style={{ width: "100%", borderCollapse: "collapse" }}>
-              <thead>
-                <tr>
-                  {hoursData.map((d) => (
-                    <th key={d.day} style={{ paddingBottom: "10px", textAlign: "left" }}>
-                      {d.day}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                <tr style={{ color: "#007bff" }}>
-                  {hoursData.map((d) => (
-                    <td key={d.day + "-open"}>{d.open}</td>
-                  ))}
-                </tr>
-                <tr style={{ color: "#007bff" }}>
-                  {hoursData.map((d) => (
-                    <td key={d.day + "-close"}>{d.close}</td>
-                  ))}
-                </tr>
-              </tbody>
-            </table>
 
-            <p style={{ marginTop: "15px", fontSize: "0.9rem", color: "#666" }}>
-              Business is often provided... <a href="#" style={{ color: "#007bff", textDecoration: "none" }}>read more</a>
-            </p>
-          </div>
-
-          {/* About/Contact */}
-          <div>
-            <h3 style={styles.sectionHeading}>Contact Information</h3>
-            <div style={{ fontSize: "0.9rem", marginBottom: "15px" }}>
-                {contactData.map((item, index) => (
-                    <p key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
-                        <Icon IconComponent={item.icon} size={16} color="#007bff" />
-                        <span style={{ color: styles.primaryTextColor }}>{item.text}</span>
-                    </p>
-                ))}
-            </div>
-            {/* Social Icons (Placeholder text for symbols) */}
-            <p style={{ marginTop: "20px" }}>
-                {/* Replace these placeholders with actual social media Icon components */}
-                <a href="#" style={{ marginRight: '10px', color: '#666' }}>[FB]</a>
-                <a href="#" style={{ marginRight: '10px', color: '#666' }}>[IG]</a>
-                <a href="#" style={{ color: '#666' }}>[TW]</a>
-            </p>
-          </div>
+        {/* Decorative Side Label */}
+        <div style={{
+          position: "absolute",
+          left: "30px",
+          bottom: "100px",
+          transform: "rotate(-90deg)",
+          transformOrigin: "left bottom",
+          color: "rgba(255,255,255,0.3)",
+          letterSpacing: "5px",
+          fontSize: "0.7rem",
+          fontWeight: "700"
+        }}>
+          EST. 2025
         </div>
-        
-        <hr style={{ border: 'none', borderTop: '1px solid #eee', margin: '40px 0' }} />
+      </div>
 
-        {/* GALLERY SECTION */}
-        <div style={{ marginTop: "40px" }}>
-          <h3 style={styles.sectionHeading}>Photo Gallery</h3>
-          <p style={{ fontSize: "0.9rem", color: "#666", marginBottom: "10px" }}>
-            Check out the beautiful ambiance and delicious food at our restaurant.
-          </p>
+      {/* 📋 INFO CARDS SECTION */}
+      <div style={{ maxWidth: "1100px", margin: "-100px auto 0", padding: "0 20px", position: "relative", zIndex: 20 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "24px" }}>
+          
+          {/* Hours Card */}
+          <div style={styles.card}>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "24px" }}>
+              <div style={{ backgroundColor: "#fffbeb", padding: "10px", borderRadius: "12px" }}>
+                <Clock color={styles.accentColor} size={24} />
+              </div>
+              <h3 style={{ margin: 0, fontSize: "1.25rem", fontWeight: "800" }}>Opening Hours</h3>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              {hoursData.map((item, i) => (
+                <div key={i} style={{ 
+                  display: "flex", justifyContent: "space-between", 
+                  paddingBottom: "12px", borderBottom: i !== hoursData.length - 1 ? "1px solid #f8fafc" : "none" 
+                }}>
+                  <span style={{ fontWeight: "600", color: item.active ? "#1a1a1a" : "#94a3b8" }}>{item.day}</span>
+                  <span style={{ color: item.active ? "#2563eb" : "#94a3b8", fontWeight: "700" }}>{item.time}</span>
+                </div>
+              ))}
+            </div>
+          </div>
 
-          <div
-            style={{
-              display: "grid",
-              // Responsive grid: minimum image size of 150px
-              gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", 
-              gap: "10px",
-            }}
-          >
-            {galleryImages.map((src, index) => (
-              <div
-                key={index}
-                style={{
-                  height: "150px", 
-                  borderRadius: "5px",
-                  overflow: "hidden",
-                  boxShadow: "0 4px 8px rgba(0,0,0,0.1)", // Subtle shadow for depth
-                }}
-              >
-                {/* Using standard <img> tag, but Next.js <Image> is recommended for optimization */}
-                <img
-                  src={src}
-                  alt={`Gallery Image ${index + 1}`}
-                  style={{ width: "100%", height: "100%", objectFit: "cover", display: 'block' }}
-                />
+          {/* Contact Card */}
+          <div style={{ ...styles.card, backgroundColor: styles.primaryTextColor, color: "white" }}>
+            <h3 style={{ fontSize: "1.25rem", fontWeight: "800", marginBottom: "30px" }}>Visit Us</h3>
+            {contactData.map((item, i) => (
+              <div key={i} style={{ display: "flex", gap: "18px", marginBottom: "24px" }}>
+                <item.icon size={20} color={styles.accentColor} />
+                <div>
+                  <div style={{ fontSize: "0.75rem", color: "#94a3b8", textTransform: "uppercase", letterSpacing: "1px" }}>{item.label}</div>
+                  <div style={{ fontSize: "1rem", fontWeight: "500", marginTop: "2px" }}>{item.text}</div>
+                </div>
               </div>
             ))}
+            <div style={{ display: "flex", gap: "20px", marginTop: "30px", opacity: 0.8 }}>
+               <Facebook size={20} style={{ cursor: 'pointer' }} />
+               <Instagram size={20} style={{ cursor: 'pointer' }} />
+               <Twitter size={20} style={{ cursor: 'pointer' }} />
+            </div>
           </div>
         </div>
       </div>
+
+      {/* 🖼️ BENTO GALLERY */}
+      <div style={{ maxWidth: "1100px", margin: "100px auto", padding: "0 20px" }}>
+        <div style={{ textAlign: "center", marginBottom: "60px" }}>
+          <h2 style={styles.sectionHeading}>Photo Gallery</h2>
+          <div style={{ width: "60px", height: "4px", backgroundColor: styles.accentColor, margin: "0 auto", borderRadius: "2px" }} />
+        </div>
+
+        <div style={{ 
+          display: "grid", 
+          gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", 
+          gridAutoRows: "240px",
+          gap: "20px" 
+        }}>
+          {[1, 2, 3, 4, 5, 6].map((img, i) => (
+            <div 
+              key={i} 
+              onMouseEnter={() => setHoveredImg(i)}
+              onMouseLeave={() => setHoveredImg(null)}
+              style={{
+                gridColumn: i === 0 ? "span 2" : "span 1",
+                gridRow: i === 0 ? "span 2" : "span 1",
+                borderRadius: "28px",
+                overflow: "hidden",
+                position: "relative",
+                cursor: "pointer",
+                boxShadow: "0 20px 40px rgba(0,0,0,0.06)"
+              }}
+            >
+              <img 
+                src={`/res${i+1}.jpg`} 
+                alt="Restaurant" 
+                style={{ 
+                  width: "100%", height: "100%", objectFit: "cover", 
+                  transition: "transform 0.6s cubic-bezier(0.33, 1, 0.68, 1)",
+                  transform: hoveredImg === i ? "scale(1.08)" : "scale(1)"
+                }}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <footer style={{ 
+        textAlign: "center", 
+        padding: "60px 20px", 
+        color: "#94a3b8", 
+        fontSize: "0.85rem", 
+        borderTop: "1px solid #f1f5f9" 
+      }}>
+        &copy; 2025 MYRESTAURANT MANAGEMENT SYSTEM. ALL RIGHTS RESERVED.
+      </footer>
     </div>
   );
 }
