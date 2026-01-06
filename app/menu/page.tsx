@@ -1,53 +1,8 @@
-// "use client";
-
-// import React from "react";
-// import { fakeFoods, Food } from "../data/foods";
-
-// export default function MenuPage() {
-//   return (
-//     <div style={{ padding: "2rem", fontFamily: "sans-serif" }}>
-//       <h1 style={{ fontSize: "2rem", fontWeight: "bold", marginBottom: "2rem" }}>Menu</h1>
-
-//       <div
-//         style={{
-//           display: "grid",
-//           gap: "1.5rem",
-//           gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-//         }}
-//       >
-//         {fakeFoods.map((food: Food) => (
-//           <div
-//             key={food.id}
-//             style={{
-//               border: "1px solid #ccc",
-//               borderRadius: "12px",
-//               overflow: "hidden",
-//               boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-//             }}
-//           >
-//             <img
-//               src={food.image}
-//               alt={food.name}
-//               style={{ width: "100%", height: "160px", objectFit: "cover" }}
-//             />
-//             <div style={{ padding: "1rem" }}>
-//               <h3 style={{ margin: "0 0 0.5rem 0", fontWeight: 600 }}>{food.name}</h3>
-//               <p style={{ margin: "0 0 0.5rem 0", fontSize: "0.85rem", color: "#555" }}>
-//                 {food.description}
-//               </p>
-//               <p style={{ fontWeight: "bold", fontSize: "1rem" }}>${food.price}</p>
-//             </div>
-//           </div>
-//         ))}
-//       </div>
-//     </div>
-//   );
-// }
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import styles from "./menu.module.css";
-import TopBar from "../landing/TopBar"; 
+import TopBar from "../landing/TopBar";
 
 interface MenuItem {
   id: string;
@@ -60,9 +15,54 @@ interface MenuItem {
   image: string;
 }
 
+const CATEGORIES = ["All", "Seafood", "Chicken", "Dessert", "Pasta"];
+
 export default function MenuPage() {
   const [menus, setMenus] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  // New States for Search and Filter
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [visibleCount, setVisibleCount] = useState(8); // For Load More
+
+  useEffect(() => {
+    // Fetching more categories to make the filtering more interesting
+    const fetchMenu = async () => {
+      try {
+        const response = await fetch("https://www.themealdb.com/api/json/v1/1/search.php?s=");
+        const data = await response.json();
+        
+        const meals = data.meals.map((item: any) => ({
+          id: item.idMeal,
+          name: item.strMeal,
+          description: item.strInstructions ? item.strInstructions.slice(0, 80) + "..." : "Delicious chef specialty.",
+          price: parseFloat((Math.random() * 10 + 10).toFixed(0)),
+          rating: Math.floor(Math.random() * 3) + 3,
+          favorite: false,
+          category: item.strCategory || "Seafood",
+          image: item.strMealThumb,
+        }));
+        
+        setMenus(meals);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching menu:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchMenu();
+  }, []);
+
+  // Filter Logic
+  const filteredMenus = useMemo(() => {
+    return menus.filter((item) => {
+      const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCategory = selectedCategory === "All" || item.category === selectedCategory;
+      return matchesSearch && matchesCategory;
+    });
+  }, [searchQuery, selectedCategory, menus]);
 
   const toggleFavorite = (id: string) => {
     setMenus(prev =>
@@ -70,6 +70,10 @@ export default function MenuPage() {
         menu.id === id ? { ...menu, favorite: !menu.favorite } : menu
       )
     );
+  };
+
+  const handleLoadMore = () => {
+    setVisibleCount(prev => prev + 4);
   };
 
   const renderStars = (rating: number) => {
@@ -88,25 +92,6 @@ export default function MenuPage() {
     );
   };
 
-  useEffect(() => {
-    fetch("https://www.themealdb.com/api/json/v1/1/filter.php?c=Seafood")
-      .then(res => res.json())
-      .then(data => {
-        const meals = data.meals.map((item: any) => ({
-          id: item.idMeal,
-          name: item.strMeal,
-          description: "Choice of Corn, Tomato, Garlic, vegetable toppings, Red/White pepper, and meats.",
-          price: parseFloat((Math.random() * 10 + 10).toFixed(0)),
-          rating: Math.floor(Math.random() * 3) + 3,
-          favorite: false,
-          category: "Seafood",
-          image: item.strMealThumb,
-        }));
-        setMenus(meals);
-        setLoading(false);
-      });
-  }, []);
-
   if (loading) {
     return (
       <>
@@ -118,15 +103,37 @@ export default function MenuPage() {
 
   return (
     <div style={{ width: "100%" }}>
-      {/* TopBar stays outside the padded wrapper for full-width look */}
       <TopBar />
 
       <div className={styles["page-wrapper"]}>
+        {/* Search and Filter Section */}
+        <div className={styles["controls-section"]}>
+          <div className={styles["search-box"]}>
+            <input 
+              type="text" 
+              placeholder="Search for food..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          
+          <div className={styles["category-list"]}>
+            {CATEGORIES.map(cat => (
+              <button 
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`${styles["category-chip"]} ${selectedCategory === cat ? styles["active-chip"] : ""}`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Menu Grid */}
         <div className={styles["menu-container"]}>
-          {menus.map(menu => (
+          {filteredMenus.slice(0, visibleCount).map(menu => (
             <div key={menu.id} className={styles["menu-card"]}>
-              {/* Image Section */}
               <div className={styles["image-wrapper"]}>
                 <img
                   src={menu.image}
@@ -141,7 +148,6 @@ export default function MenuPage() {
                 </button>
               </div>
 
-              {/* Content Section */}
               <div className={styles["content-wrapper"]}>
                 <div className={styles["title-row"]}>
                   <h2 className={styles["menu-name"]}>{menu.name}</h2>
@@ -154,7 +160,6 @@ export default function MenuPage() {
 
                 <div className={styles["footer-row"]}>
                   {renderStars(menu.rating)}
-                  {/* The Orange Corner Button from your CSS */}
                   <button className={styles["add-btn"]}>+</button>
                 </div>
               </div>
@@ -162,10 +167,22 @@ export default function MenuPage() {
           ))}
         </div>
 
+        {/* Empty State */}
+        {filteredMenus.length === 0 && (
+          <div className={styles["no-results"]}>No dishes found matching your criteria.</div>
+        )}
+
         {/* Load More Button */}
-        <div className={styles["load-more-container"]}>
-          <button className={styles["load-more-btn"]}>Load More</button>
-        </div>
+        {visibleCount < filteredMenus.length && (
+          <div className={styles["load-more-container"]}>
+            <button 
+              className={styles["load-more-btn"]}
+              onClick={handleLoadMore}
+            >
+              Load More
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

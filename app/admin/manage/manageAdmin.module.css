@@ -1,0 +1,123 @@
+/* Container for the whole page */
+.container {
+  padding: 30px;
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  background: #f9fafb;
+}
+
+/* Title and Subtitle */
+.title {
+  font-size: 28px;
+  font-weight: 900;
+  margin-bottom: 5px;
+  color: #1a1a1a;
+}
+
+.subtitle {
+  font-size: 0.95rem;
+  color: #64748b;
+  margin-bottom: 20px;
+}
+
+/* Form to add new admin */
+.form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.formInput {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  font-size: 0.95rem;
+}
+
+.form button {
+  padding: 10px 14px;
+  background: #ffb600;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.form button:hover {
+  background: #e6a300;
+}
+
+.cancelBtn {
+  background: #e5e7eb;
+  color: #1a1a1a;
+}
+
+/* Filter input for search */
+.filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.filterInput {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+}
+
+/* Table styles */
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.table th, .table td {
+  padding: 12px 15px;
+  text-align: left;
+}
+
+.table th {
+  background: #f3f4f6;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #475569;
+}
+
+.table tr:nth-child(even) {
+  background: #f9fafb;
+}
+
+/* Action buttons inside table */
+.actions button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  margin-right: 8px;
+  color: #64748b;
+  transition: color 0.2s;
+}
+
+.actions button:hover {
+  color: #ffb600;
+}
+
+.delete:hover {
+  color: #ef4444;
+}

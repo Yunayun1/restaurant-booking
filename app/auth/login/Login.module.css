@@ -1,0 +1,129 @@
+.pageWrapper {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url('/res4.jpg');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  font-family: sans-serif;
+}
+
+/* Background Dark Overlay */
+.pageWrapper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 1;
+}
+
+.loginCard {
+  position: relative;
+  z-index: 10;
+  width: 90%;
+  max-width: 420px;
+  padding: 45px 35px;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  backdrop-filter: blur(4px);
+}
+
+.header h2 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #212121;
+  margin-bottom: 8px;
+}
+
+.header p {
+  color: #666;
+  margin-bottom: 30px;
+  font-size: 0.95rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.inputIcon {
+  position: absolute;
+  left: 15px;
+  color: #888;
+}
+
+.input {
+  width: 100%;
+  padding: 14px 18px 14px 45px; /* Extra left padding for icon */
+  border-radius: 12px;
+  border: 1px solid rgba(33, 33, 33, 0.2);
+  font-size: 1rem;
+  color: #212121;
+  background-color: white;
+  transition: border-color 0.2s;
+  outline: none;
+}
+
+.input:focus {
+  border-color: #ffb400;
+}
+
+.submitBtn {
+  width: 100%;
+  padding: 16px;
+  background-color: #ffb400;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 700;
+  color: #212121;
+  font-size: 1.1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  transition: transform 0.1s, background-color 0.2s;
+}
+
+.submitBtn:hover {
+  background-color: #e6a300;
+}
+
+.submitBtn:active {
+  transform: scale(0.98);
+}
+
+.errorMsg {
+  background-color: #fee2e2;
+  color: #d9534f;
+  padding: 10px;
+  border-radius: 8px;
+  margin-top: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.footer {
+  margin-top: 30px;
+  font-size: 0.95rem;
+  color: #212121;
+}
+
+.link {
+  color: #ffb400;
+  cursor: pointer;
+  font-weight: bold;
+  text-decoration: underline;
+  margin-left: 5px;
+}

@@ -5,7 +5,7 @@ import {
   Phone, Mail, MapPin, Clock, 
   ChevronRight, Facebook, Instagram, Twitter 
 } from "lucide-react";
-import TopBar from "./TopBar";
+import TopBar from "./TopBar"; // Ensure this path matches your project
 
 const styles = {
   primaryTextColor: "#1a1a1a",
@@ -61,6 +61,20 @@ const contactData = [
 export default function LandingPage() {
   const router = useRouter();
   const [hoveredImg, setHoveredImg] = useState<number | null>(null);
+
+  // ✅ SMART BOOKING REDIRECT LOGIC
+  const handleBookingClick = () => {
+    const storedUser = localStorage.getItem("user");
+
+    if (storedUser) {
+      // User is already logged in, go straight to booking
+      router.push("/booking");
+    } else {
+      // User is not logged in, save their intent and go to login
+      localStorage.setItem("redirectAfterLogin", "/booking");
+      router.push("/auth/login");
+    }
+  };
 
   return (
     <div style={{ backgroundColor: "#fdfdfd", minHeight: "100vh", fontFamily: "'Inter', sans-serif" }}>
@@ -130,12 +144,9 @@ export default function LandingPage() {
             Join us for an unforgettable culinary journey.
           </p>
           
-          {/* ✅ UPDATED BUTTON WITH REDIRECT LOGIC */}
+          {/* ✅ UPDATED BUTTON */}
           <button 
-            onClick={() => {
-              localStorage.setItem("redirectAfterLogin", "/booking");
-              router.push("/auth/login");
-            }}
+            onClick={handleBookingClick}
             style={styles.primaryButton}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = "translateY(-5px)";
@@ -162,7 +173,7 @@ export default function LandingPage() {
           fontSize: "0.7rem",
           fontWeight: "700"
         }}>
-          EST. 2025
+          EST. 2026
         </div>
       </div>
 
@@ -261,7 +272,7 @@ export default function LandingPage() {
         fontSize: "0.85rem", 
         borderTop: "1px solid #f1f5f9" 
       }}>
-        &copy; 2025 MYRESTAURANT MANAGEMENT SYSTEM. ALL RIGHTS RESERVED.
+        &copy; 2026 MYRESTAURANT MANAGEMENT SYSTEM. ALL RIGHTS RESERVED.
       </footer>
     </div>
   );

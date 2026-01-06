@@ -1,0 +1,245 @@
+/* =========================================
+   PAGE LAYOUT
+   ========================================= */
+.pageContainer {
+  background-color: #f8fafc;
+  min-height: 100vh;
+  width: 100%;
+  font-family: 'Inter', -apple-system, sans-serif;
+  color: #1e293b;
+}
+
+.contentWrapper {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 60px 20px;
+}
+
+.contentWrapper h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 30px;
+  color: #0f172a;
+  letter-spacing: -0.025em;
+}
+
+/* =========================================
+   PROFILE HEADER
+   ========================================= */
+.profileHeader {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  background-color: #cbd5e1;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  font-weight: bold;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.profileHeader h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.profileHeader p {
+  font-size: 0.9rem;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+.editName {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.editName input {
+  padding: 4px 8px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  font-size: 0.95rem;
+}
+
+/* =========================================
+   HISTORY HEADER
+   ========================================= */
+.historyHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.historyHeader h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.historyHeader button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  background-color: #f87171;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.historyHeader button:hover {
+  background-color: #ef4444;
+}
+
+/* =========================================
+   RESERVATION CARDS
+   ========================================= */
+.bookingCard {
+  background: #ffffff;
+  padding: 20px 24px;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  gap: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+
+.bookingCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 12px -2px rgba(0, 0, 0, 0.1);
+}
+
+.bookingCard > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.bookingCard svg {
+  color: #64748b;
+}
+
+/* STATUS BADGE */
+.bookingCard > div:last-child {
+  padding: 6px 12px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* STATUS COLORS */
+.statusPending {
+  background-color: #fffbeb;
+  color: #92400e;
+}
+
+.statusComplete {
+  background-color: #f0fdf4;
+  color: #166534;
+}
+
+.statusRejected {
+  background-color: #fef2f2;
+  color: #991b1b;
+}
+
+/* DELETE BUTTON ON CARD */
+.deleteBtn {
+  background: #f87171;
+  border: none;
+  border-radius: 8px;
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.deleteBtn:hover {
+  background: #ef4444;
+}
+
+.deleteBtn svg {
+  color: #fff;
+}
+
+/* =========================================
+   STATES
+   ========================================= */
+.loadingText {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 60px;
+  background: #ffffff;
+  border-radius: 24px;
+  border: 2px dashed #e2e8f0;
+  color: #94a3b8;
+}
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+@media (max-width: 600px) {
+  .bookingCard {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .bookingCard > div:last-child {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .historyHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .profileHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+}

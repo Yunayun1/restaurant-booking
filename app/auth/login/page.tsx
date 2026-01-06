@@ -3,173 +3,115 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { loginUser } from "@/lib/authService";
-import { ArrowRight } from "lucide-react"; 
-
-// Styles & colors
-const ACCENT_COLOR = "#ffb400";
-const PRIMARY_TEXT = "#212121";
-const CARD_BACKGROUND = "rgba(255, 255, 255, 0.95)";
-const BG_OVERLAY = "rgba(0, 0, 0, 0.6)";
+import { ArrowRight, Lock, Mail } from "lucide-react";
+import styles from "./Login.module.css";
 
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  // Admin credentials
+  const ADMIN_EMAIL = "admin@example.com";
+  const ADMIN_PASSWORD = "123456"; 
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+    setLoading(true);
 
     try {
-      // ✅ LOGIN
+      // Check for admin login first
+      if (email === ADMIN_EMAIL) {
+        if (password !== ADMIN_PASSWORD) {
+          throw new Error("Incorrect admin password.");
+        }
+
+        // Admin login successful
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            name: "Admin",
+            email: ADMIN_EMAIL,
+            role: "admin",
+          })
+        );
+
+        router.push("/admin/dashboard");
+        return;
+      }
+
+      // Normal user login
       await loginUser(email, password);
 
-      // ✅ SAVE USER (for TopBar profile circle)
       localStorage.setItem(
         "user",
         JSON.stringify({
-          name: email.split("@")[0], // example: yuna@gmail.com → yuna
+          name: email.split("@")[0],
           email,
+          role: "user",
         })
       );
 
-      // ✅ REDIRECT TO ORIGINAL PAGE OR HOMEPAGE
-      const redirectPath = localStorage.getItem("redirectAfterLogin") || "/landing";
-      localStorage.removeItem("redirectAfterLogin");
-      router.push(redirectPath); // ← key change here
-
+      router.push("/landing");
     } catch (err: any) {
       setError(err.message || "Login failed. Please check your credentials.");
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundImage: "url('/res4.jpg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        fontFamily: "sans-serif",
-      }}
-    >
-      {/* Background Overlay */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          backgroundColor: BG_OVERLAY,
-        }}
-      />
+    <div className={styles.pageWrapper}>
+      <div className={styles.loginCard}>
+        <div className={styles.header}>
+          <h2>Welcome Back</h2>
+          <p>Please enter your details to sign in.</p>
+        </div>
 
-      {/* Login Card */}
-      <div
-        style={{
-          zIndex: 10,
-          width: "90%",
-          maxWidth: "420px",
-          padding: "40px 30px",
-          backgroundColor: CARD_BACKGROUND,
-          borderRadius: "16px",
-          boxShadow: "0 8px 30px rgba(0, 0, 0, 0.3)",
-          textAlign: "center",
-          backdropFilter: "blur(2px)",
-        }}
-      >
-        <h2
-          style={{
-            fontSize: "2rem",
-            fontWeight: 800,
-            marginBottom: "30px",
-            color: PRIMARY_TEXT,
-          }}
-        >
-          Welcome
-        </h2>
+        <form onSubmit={handleLogin} className={styles.formGroup}>
+          <div className={styles.inputWrapper}>
+            <Mail className={styles.inputIcon} size={20} />
+            <input
+              type="email"
+              placeholder="Email address"
+              className={styles.input}
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
 
-        <form
-          onSubmit={handleLogin}
-          style={{ display: "flex", flexDirection: "column", gap: 20 }}
-        >
-          {/* Email */}
-          <input
-            type="email"
-            placeholder="Email Address"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            style={{
-              padding: "14px 18px",
-              borderRadius: "10px",
-              border: `1px solid ${PRIMARY_TEXT}60`,
-              fontSize: "1rem",
-              color: PRIMARY_TEXT,
-            }}
-          />
+          <div className={styles.inputWrapper}>
+            <Lock className={styles.inputIcon} size={20} />
+            <input
+              type="password"
+              placeholder="Password"
+              className={styles.input}
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
 
-          {/* Password */}
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            style={{
-              padding: "14px 18px",
-              borderRadius: "10px",
-              border: `1px solid ${PRIMARY_TEXT}60`,
-              fontSize: "1rem",
-              color: PRIMARY_TEXT,
-            }}
-          />
-
-          {/* Login Button */}
-          <button
-            type="submit"
-            style={{
-              padding: "15px 20px",
-              backgroundColor: ACCENT_COLOR,
-              border: "none",
-              borderRadius: "10px",
-              cursor: "pointer",
-              fontWeight: "bold",
-              color: PRIMARY_TEXT,
-              fontSize: "1.1rem",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: "10px",
-            }}
+          <button 
+            type="submit" 
+            className={styles.submitBtn} 
+            disabled={loading}
           >
-            Log In
-            <ArrowRight size={20} color={PRIMARY_TEXT} />
+            {loading ? "Signing in..." : "Login"} 
+            {!loading && <ArrowRight size={18} />}
           </button>
         </form>
 
-        {/* Error */}
-        {error && (
-          <p style={{ color: "#d9534f", marginTop: 15, fontWeight: 500 }}>
-            {error}
-          </p>
-        )}
+        {error && <div className={styles.errorMsg}>{error}</div>}
 
-        {/* Sign Up Link */}
-        <p style={{ marginTop: 25, fontSize: "0.95rem", color: PRIMARY_TEXT }}>
-          Don’t have an account?{" "}
-          <span
-            onClick={() => router.push("/auth/register")}
-            style={{
-              color: ACCENT_COLOR,
-              cursor: "pointer",
-              fontWeight: "bold",
-              textDecoration: "underline",
-            }}
-          >
-            Sign Up
+        <p className={styles.footer}>
+          Don’t have an account?
+          <span className={styles.link} onClick={() => router.push("/auth/register")}>
+            Sign up
           </span>
         </p>
       </div>
