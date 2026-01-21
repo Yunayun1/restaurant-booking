@@ -1,0 +1,148 @@
+/* =========================================
+   PAGE WRAPPER
+   ========================================= */
+.page-wrapper {
+  width: 100%;
+  margin: 0;
+  font-family: 'Inter', -apple-system, sans-serif;
+  background-color: #f8f9fa;
+  box-sizing: border-box;
+  min-height: 100vh;
+}
+
+.content-wrapper {
+  max-width: 1200px;
+  margin: 4rem auto;
+}
+
+/* =========================================
+   HERO SECTION (Designer Look)
+   ========================================= */
+.hero-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  margin-bottom: 5rem;
+}
+
+.hero-content h1 {
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: #1a1a1a;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+}
+
+.hero-content h1 span {
+  color: #ffb400;
+}
+
+.hero-content p {
+  font-size: 1.15rem;
+  color: #666;
+  line-height: 1.8;
+  margin-bottom: 2.5rem;
+}
+
+.hero-image-container {
+  position: relative;
+}
+
+.hero-img {
+  width: 100%;
+  height: 500px;
+  object-fit: cover;
+  /* Signature designer curve from your reference */
+  border-radius: 40px 40px 20px 100px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+}
+
+/* =========================================
+   STATS GRID (Matching Menu Card Style)
+   ========================================= */
+.stats-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2.5rem;
+  margin-bottom: 5rem;
+}
+
+.stat-card {
+  background: white;
+  padding: 3rem 2rem;
+  border-radius: 25px;
+  text-align: center;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.04);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-10px);
+}
+
+.stat-value {
+  display: block;
+  font-size: 3rem;
+  font-weight: 800;
+  color: #ffb400;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  font-weight: 700;
+  color: #1a1a1a;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.85rem;
+}
+
+/* Bottom corner decoration like your "Add" button */
+.corner-accent {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 40px;
+  height: 40px;
+  background: #ffb400;
+  border-radius: 20px 0 0 0;
+}
+
+/* =========================================
+   VALUES / MISSION SECTION
+   ========================================= */
+.mission-box {
+  background: #1a1a1a;
+  color: white;
+  padding: 4rem;
+  border-radius: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.mission-box h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+}
+
+.mission-box p {
+  max-width: 800px;
+  font-size: 1.1rem;
+  color: #ccc;
+  line-height: 1.6;
+}
+
+@media (max-width: 900px) {
+  .hero-section {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  .hero-img {
+    height: 350px;
+  }
+}

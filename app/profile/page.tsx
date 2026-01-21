@@ -114,61 +114,62 @@ export default function ProfilePage() {
 
   if (loading) return <div className={styles.loadingText}>Loading Profile...</div>;
 
-  return (
-    <div className={styles.pageContainer}>
-      <TopBar />
-      <div className={styles.contentWrapper}>
+  // ... imports ...
 
-        {/* PROFILE HEADER */}
-        <div className={styles.profileHeader}>
-          <label className={styles.avatar}>
-            <input type="file" hidden onChange={uploadAvatar} />
-            {avatar ? <img src={avatar} /> : user.name[0]}
-          </label>
+return (
+  <div className={styles.pageContainer}>
+    <TopBar />
+    <div className={styles.contentWrapper}>
+      
+      {/* PROFILE HEADER */}
+      <div className={styles.profileHeader}>
+        <label className={styles.avatar}>
+          <input type="file" hidden onChange={uploadAvatar} />
+          {avatar ? <img src={avatar} alt="User" /> : user.name[0]}
+        </label>
 
-          <div>
-            {editName ? (
-              <div className={styles.editName}>
-                <input value={name} onChange={e => setName(e.target.value)} />
-                <button onClick={saveName}><Save size={16} /></button>
-              </div>
-            ) : (
-              <h2>
-                {user.name}
-                <Edit size={16} onClick={() => setEditName(true)} />
-              </h2>
-            )}
-            <p>{user.email}</p>
-          </div>
-        </div>
-
-        {/* HISTORY HEADER */}
-        <div className={styles.historyHeader}>
-          <h3>Your Reservation History</h3>
-          {bookings.length > 0 && (
-            <button onClick={clearAllHistory}>
-              <Eraser size={14} /> Clear All
-            </button>
+        <div className={styles.userInfo}>
+          {editName ? (
+            <div className={styles.editNameRow}>
+              <input className={styles.nameInput} value={name} onChange={e => setName(e.target.value)} />
+              <button className={styles.saveBtn} onClick={saveName}><Save size={18} /></button>
+            </div>
+          ) : (
+            <h2>
+              {user.name} 
+              <Edit className={styles.editIcon} size={20} onClick={() => setEditName(true)} />
+            </h2>
           )}
+          <p className={styles.userEmail}>{user.email}</p>
         </div>
+      </div>
 
-        {/* BOOKINGS */}
-        {bookings.length === 0 ? (
-          <p>No bookings found.</p>
-        ) : (
-          bookings.map(b => (
+      {/* HISTORY HEADER */}
+      <div className={styles.historyHeader}>
+        <h3>Reservation History</h3>
+        {bookings.length > 0 && (
+          <button className={styles.clearBtn} onClick={clearAllHistory}>
+            <Eraser size={16} /> Clear All
+          </button>
+        )}
+      </div>
+
+      {/* BOOKINGS GRID */}
+      {bookings.length === 0 ? (
+        <p className={styles.noResults}>No reservations found in your history.</p>
+      ) : (
+        <div className={styles.bookingsGrid}>
+          {bookings.map(b => (
             <div key={b.id} className={styles.bookingCard}>
-              <div><Calendar size={16} /> {b.date}</div>
-              <div><Clock size={16} /> {b.time}</div>
-              <div><Users size={16} /> {b.people} Pax</div>
+              <div className={styles.cardRow}><Calendar size={18} /> {b.date}</div>
+              <div className={styles.cardRow}><Clock size={18} /> {b.time}</div>
+              <div className={styles.cardRow}><Users size={18} /> {b.people} Guests</div>
 
-              <div className={
-                b.status === "Pending"
-                  ? styles.statusPending
-                  : b.status === "Complete"
-                  ? styles.statusComplete
-                  : styles.statusRejected
-              }>
+              <div className={`
+                ${styles.statusChip} 
+                ${b.status === "Pending" ? styles.statusPending : 
+                  b.status === "Complete" ? styles.statusComplete : styles.statusRejected}
+              `}>
                 {b.status === "Pending" && <Hourglass size={14} />}
                 {b.status === "Complete" && <CheckCircle2 size={14} />}
                 {b.status === "Rejected" && <XCircle size={14} />}
@@ -176,13 +177,13 @@ export default function ProfilePage() {
               </div>
 
               <button onClick={() => deleteBooking(b.id)} className={styles.deleteBtn}>
-                <Trash2 size={16} />
+                <Trash2 size={20} />
               </button>
             </div>
-          ))
-        )}
-
-      </div>
+          ))}
+        </div>
+      )}
     </div>
-  );
-}
+  </div>
+)
+};

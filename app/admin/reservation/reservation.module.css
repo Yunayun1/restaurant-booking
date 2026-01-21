@@ -1,0 +1,232 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+
+/* =========================================
+   GEN Z MODERN THEME VARIABLES
+   ========================================= */
+:root {
+  --primary: #ffb400;
+  --primary-glow: rgba(255, 180, 0, 0.3);
+  --bg-dark: #0f1115;
+  --card-bg: #ffffff;
+  --glass: rgba(255, 255, 255, 0.8);
+  --text-main: #1a1a1a;
+  --text-muted: #64748b;
+  --radius-xl: 32px;
+  --radius-m: 16px;
+  --border: 2px solid #f1f5f9;
+}
+
+/* =========================================
+   PAGE WRAPPER & LAYOUT
+   ========================================= */
+.page-wrapper {
+  padding: 1.5rem;
+  width: 100%;
+  margin: 0;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: #f4f7fa; /* Ultra light cool grey */
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(255, 180, 0, 0.05) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(255, 180, 0, 0.05) 0px, transparent 50%);
+  box-sizing: border-box;
+  min-height: 100vh;
+}
+
+.content-wrapper {
+  max-width: 1300px;
+  margin: 2rem auto;
+}
+
+/* =========================================
+   HEADER & BENTO STATS
+   ========================================= */
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 2.5rem;
+  padding: 0 1rem;
+}
+
+.history-header h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  letter-spacing: -2px;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.stats-pill {
+  background: var(--text-main);
+  color: white;
+  padding: 12px 24px;
+  border-radius: var(--radius-m);
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+/* =========================================
+   NEO-SEARCH BOX
+   ========================================= */
+.controls-section {
+  margin-bottom: 3rem;
+}
+
+.search-box {
+  width: 100%;
+  max-width: 600px;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 20px 30px;
+  border-radius: var(--radius-xl);
+  border: 3px solid transparent;
+  background: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.search-box input:focus {
+  outline: none;
+  border-color: var(--primary);
+  transform: scale(1.02);
+  box-shadow: 0 20px 40px var(--primary-glow);
+}
+
+/* =========================================
+   RESERVATION CARDS (BENTO STYLE)
+   ========================================= */
+.menu-container {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+}
+
+.menu-card {
+  background: white;
+  border: var(--border);
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.menu-card:hover {
+  transform: translateY(-10px) rotate(1deg);
+  border-color: var(--primary);
+  box-shadow: 20px 20px 0px rgba(255, 180, 0, 0.1);
+}
+
+.menu-name {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 0.5rem;
+}
+
+.cardRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-top: 10px;
+}
+
+.cardRow svg {
+  color: var(--primary);
+}
+
+/* =========================================
+   GEN Z CHIPS & BUTTONS
+   ========================================= */
+.statusChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.statusPending { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+.statusComplete { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+.statusRejected { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+
+.active-chip {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: var(--radius-m);
+  cursor: pointer;
+  font-weight: 700;
+  transition: 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.active-chip:hover {
+  background: #000;
+  transform: scale(1.05);
+}
+
+.category-chip {
+  background: #f1f5f9;
+  color: var(--text-main);
+  border: none;
+  padding: 12px 20px;
+  border-radius: var(--radius-m);
+  cursor: pointer;
+  font-weight: 700;
+  transition: 0.3s;
+}
+
+.category-chip:hover {
+  background: #e2e8f0;
+}
+
+/* =========================================
+   LOOMING LOADER
+   ========================================= */
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  font-size: 4rem;
+  font-weight: 900;
+  color: #e2e8f0;
+  text-transform: uppercase;
+  letter-spacing: -5px;
+  animation: pulse 1.5s infinite alternate;
+}
+
+@keyframes pulse {
+  from { opacity: 0.2; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+@media (max-width: 768px) {
+  .history-header h1 { font-size: 2rem; }
+  .menu-container { grid-template-columns: 1fr; }
+  .page-wrapper { padding: 1rem; }
+}

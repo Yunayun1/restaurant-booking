@@ -30,7 +30,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       path: "/admin/messages", 
       desc: "Customer Chat" 
     },
-    { name: "Reservations", icon: <CalendarCheck size={20} />, path: "/admin/reservations", desc: "Edit / Cancel" },
+    { name: "Reservations", icon: <CalendarCheck size={20} />, path: "/admin/reservation", desc: "Edit / Cancel" },
     { name: "Tables", icon: <TableProperties size={20} />, path: "/admin/table", desc: "Availability" },
   ];
 

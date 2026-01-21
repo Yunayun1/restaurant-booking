@@ -90,9 +90,9 @@ export default function TopBar() {
       </div>
 
       <div style={{ display: "flex", gap: "35px", alignItems: "center" }}>
-        {["Home", "Menu", "About Us", "Contact"].map((label) => {
+        {["Home", "Menu", "About Us",].map((label) => {
           const pathMap: Record<string, string> = {
-            Home: "/landing", Menu: "/menu", "About Us": "/aboutus", Contact: "/contact",
+            Home: "/landing", Menu: "/menu", "About Us": "/about",
           };
           const path = pathMap[label];
           const isActive = pathname === path;
