@@ -18,7 +18,7 @@
   gap: 8px;
   background: none;
   border: none;
-  color: #64748b;
+  color: #161a1f;
   cursor: pointer;
   font-weight: 600;
   margin-bottom: 24px;
@@ -48,7 +48,7 @@
 }
 
 .subtitle {
-  color: #64748b;
+  color: #0b0c0f;
   font-size: 1.1rem;
 }
 

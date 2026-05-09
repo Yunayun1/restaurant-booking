@@ -19,8 +19,14 @@ export default function AdminMessagesPage() {
   }, []);
 
   // Get unique list of user emails
-  const userList = Array.from(new Set(allMessages.map(m => m.email)));
-  const chatMessages = allMessages.filter(m => m.email === selectedUser);
+  const userList = Array.from(
+    new Set(allMessages
+      .filter(m => m.type !== "reservation")
+      .map(m => m.email))
+  );
+  const chatMessages = allMessages.filter(
+    m => m.email === selectedUser && m.type !== "reservation"
+  );
 
   const handleAdminReply = async () => {
     if (!replyText.trim() || !selectedUser) return;
@@ -30,6 +36,7 @@ export default function AdminMessagesPage() {
       content: replyText,
       read: false,
       isAdmin: true,
+      type: "chat",
       createdAt: serverTimestamp(),
     });
     setReplyText("");

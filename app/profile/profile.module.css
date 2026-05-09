@@ -71,6 +71,79 @@
   transition: transform 0.2s;
 }
 
+.chatButton {
+  margin-top: 18px;
+  padding: 12px 22px;
+  border-radius: 999px;
+  border: none;
+  background: #ffb400;
+  color: #1a1a1a;
+  cursor: pointer;
+  font-weight: 700;
+  box-shadow: 0 12px 25px rgba(255, 180, 0, 0.25);
+  transition: transform 0.2s, background 0.2s ease;
+}
+
+.chatButton:hover {
+  transform: translateY(-2px);
+  background: #e6a800;
+}
+
+.actionButtonRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.notifyButton {
+  margin-top: 18px;
+  padding: 12px 22px;
+  border-radius: 999px;
+  border: 2px solid #1a1a1a;
+  background: transparent;
+  color: #1a1a1a;
+  cursor: pointer;
+  font-weight: 700;
+  transition: transform 0.2s, background 0.2s ease, color 0.2s ease;
+}
+
+.notifyButton:hover {
+  transform: translateY(-2px);
+  background: #1a1a1a;
+  color: #ffffff;
+}
+
+.notificationPill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 14px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: #fff3cd;
+  color: #856404;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.notificationLinkButton {
+  margin-top: 18px;
+  padding: 12px 18px;
+  border-radius: 22px;
+  border: 1px solid #dcdcdc;
+  background: #fafafa;
+  color: #1a1a1a;
+  cursor: pointer;
+  font-weight: 700;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.notificationLinkButton:hover {
+  background: #ececec;
+  transform: translateY(-1px);
+}
+
 .editIcon:hover { transform: scale(1.1); }
 
 .userEmail {

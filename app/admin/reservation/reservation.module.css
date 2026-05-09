@@ -89,6 +89,7 @@
   background: white;
   font-size: 1.1rem;
   font-weight: 600;
+  color: #374151;
   box-shadow: 0 15px 35px rgba(0,0,0,0.05);
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
@@ -164,7 +165,8 @@
 }
 
 .statusPending { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
-.statusComplete { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+.statusApproved { background: #ecfdf5; color: #166534; border: 1px solid #bbf7d0; }
+.statusComplete { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
 .statusRejected { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
 
 .active-chip {

@@ -43,6 +43,7 @@ export default function AdminReservations() {
   };
 
   const filteredBookings = bookings.filter(b => 
+    b.id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     b.email?.toLowerCase().includes(searchTerm.toLowerCase()) || 
     b.name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -69,7 +70,7 @@ export default function AdminReservations() {
           <div className={styles["search-box"]}>
             <input 
               type="text" 
-              placeholder="Search by guest name or email..." 
+              placeholder="Search by booking ID, guest name, or email..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -100,6 +101,7 @@ export default function AdminReservations() {
                 <div className={`
                   ${styles.statusChip} 
                   ${b.status === "Pending" ? styles.statusPending : 
+                    b.status === "Approved" ? styles.statusApproved : 
                     b.status === "Complete" ? styles.statusComplete : styles.statusRejected}
                 `}>
                   {b.status}

@@ -8,15 +8,17 @@ import { Trash2, Edit2, Check } from "lucide-react";
 
 interface Table {
   id?: string;
-  number: number; // New table number field
-  name: string;
+  number: number;
+  customerName: string;
+  capacity: number;
   floor: string;
-  seats: number;
-  status: "Available" | "Reserved" | "Occupied";
+  date: string;
+  time: string;
+  status: "Available" | "Booked" | "Arrived" | "Complete";
 }
 
 const FLOORS = ["All", "Ground", "First", "Second", "Third"];
-const STATUS = ["Available", "Reserved", "Occupied"];
+const STATUS = ["Available", "Booked", "Arrived", "Complete"];
 
 export default function TableManagement() {
   const [tables, setTables] = useState<Table[]>([]);
@@ -25,9 +27,11 @@ export default function TableManagement() {
 
   // Form states
   const [number, setNumber] = useState(1);
-  const [name, setName] = useState("");
+  const [customerName, setCustomerName] = useState("");
+  const [capacity, setCapacity] = useState(2);
   const [floor, setFloor] = useState("Ground");
-  const [seats, setSeats] = useState(2);
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
 
   // Fetch tables
@@ -47,21 +51,23 @@ export default function TableManagement() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!name || !floor || !seats || !number) return;
+    if (!customerName || !floor || !capacity || !number || !date || !time) return;
 
     if (editingId) {
       // Update existing table
-      await updateDoc(doc(db, "tables", editingId), { number, name, floor, seats });
+      await updateDoc(doc(db, "tables", editingId), { number, customerName, floor, capacity, date, time });
       setEditingId(null);
     } else {
       // Add new table
-      await addDoc(collection(db, "tables"), { number, name, floor, seats, status: "Available" });
+      await addDoc(collection(db, "tables"), { number, customerName, floor, capacity, date, time, status: "Available" });
     }
 
     setNumber(1);
-    setName("");
+    setCustomerName("");
     setFloor("Ground");
-    setSeats(2);
+    setCapacity(2);
+    setDate("");
+    setTime("");
     fetchTables();
   };
 
@@ -76,9 +82,11 @@ export default function TableManagement() {
   // Edit table
   const handleEdit = (table: Table) => {
     setNumber(table.number);
-    setName(table.name);
+    setCustomerName(table.customerName);
     setFloor(table.floor);
-    setSeats(table.seats);
+    setCapacity(table.capacity);
+    setDate(table.date);
+    setTime(table.time);
     setEditingId(table.id || null);
   };
 
@@ -108,21 +116,34 @@ export default function TableManagement() {
         />
         <input
           type="text"
-          placeholder="Table Name (e.g., A1)"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          placeholder="Customer Name"
+          value={customerName}
+          onChange={(e) => setCustomerName(e.target.value)}
+          required
+        />
+        <input
+          type="number"
+          placeholder="Capacity"
+          value={capacity}
+          min={1}
+          max={20}
+          onChange={(e) => setCapacity(Number(e.target.value))}
           required
         />
         <select value={floor} onChange={(e) => setFloor(e.target.value)}>
           {FLOORS.slice(1).map(f => <option key={f} value={f}>{f}</option>)}
         </select>
         <input
-          type="number"
-          placeholder="Seats"
-          value={seats}
-          min={1}
-          max={20}
-          onChange={(e) => setSeats(Number(e.target.value))}
+          type="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          required
+        />
+        <input
+          type="time"
+          value={time}
+          onChange={(e) => setTime(e.target.value)}
+          required
         />
         <button type="submit">{editingId ? "Update Table" : "Add Table"} {editingId && <Check size={16} />}</button>
       </form>
@@ -145,10 +166,12 @@ export default function TableManagement() {
           <table className={styles.table}>
             <thead>
               <tr>
-                <th>Number</th> {/* New column */}
-                <th>Name</th>
+                <th>Number</th>
+                <th>Customer Name</th>
+                <th>Capacity</th>
                 <th>Floor</th>
-                <th>Seats</th>
+                <th>Date</th>
+                <th>Time</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
@@ -156,10 +179,12 @@ export default function TableManagement() {
             <tbody>
               {filteredTables.map(table => (
                 <tr key={table.id}>
-                  <td>{table.number}</td> {/* Display table number */}
-                  <td>{table.name}</td>
+                  <td>{table.number}</td>
+                  <td>{table.customerName}</td>
+                  <td>{table.capacity}</td>
                   <td>{table.floor}</td>
-                  <td>{table.seats}</td>
+                  <td>{table.date}</td>
+                  <td>{table.time}</td>
                   <td>
                     <select
                       value={table.status}

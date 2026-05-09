@@ -16,6 +16,7 @@ interface Booking {
   date: string;
   time: string;
   people: number;
+  tableNumber?: string;
   status: "Pending" | "Approved" | "Rejected";
 }
 
@@ -25,6 +26,7 @@ export default function AdminBookingsPage() {
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("All");
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     fetchBookings();
@@ -53,15 +55,40 @@ export default function AdminBookingsPage() {
       const bookingRef = doc(db, "bookings", booking.id);
       await updateDoc(bookingRef, { status });
 
-      // 2. CREATE MESSAGE 
-      // Adding isAdmin: true is what triggers the badge in TopBar.tsx
-      await addDoc(collection(db, "messages"), {
-        email: booking.email, 
-        title: `Booking ${status}!`,
-        content: `Hi ${booking.name}, your table for ${booking.people} pax on ${booking.date} at ${booking.time} has been ${status.toLowerCase()}.`,
-        read: false,
-        isAdmin: true, // IMPORTANT: Triggers the notification badge
-        createdAt: serverTimestamp(), 
+      // 2. CREATE RESERVATION NOTIFICATION FOR CUSTOMER
+      await addDoc(collection(db, "notifications"), {
+        userEmail: booking.email,
+        bookingId: booking.id,
+        title:
+          status === "Approved"
+            ? "Reservation Confirmed"
+            : "Reservation Rejected",
+        message:
+          status === "Approved"
+            ? `Your reservation at Royal Restaurant is confirmed.
+
+Hi ${booking.name},
+
+Thank you for booking with us.
+
+Reservation details:
+Date: ${booking.date}
+Time: ${booking.time}
+Guests: ${booking.people}
+Phone: ${booking.phone}
+
+We look forward to serving you.`
+            : `Reservation rejected.
+
+Hi ${booking.name},
+
+We are sorry to inform you that your reservation request for ${booking.date} at ${booking.time} could not be approved.
+
+Please try another time slot or contact the restaurant directly.`,
+        status,
+        type: "reservation",
+        isRead: false,
+        createdAt: serverTimestamp(),
       });
 
       // 3. Update local state for immediate UI feedback

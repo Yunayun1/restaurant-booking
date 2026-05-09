@@ -14,6 +14,7 @@ export default function TopBar() {
   const [isHovered, setIsHovered] = useState<string | null>(null);
   
   const [unreadMessages, setUnreadMessages] = useState(0);
+  const [unreadNotifications, setUnreadNotifications] = useState(0);
   const [showToast, setShowToast] = useState(false);
   const [toastText, setToastText] = useState("");
 
@@ -41,19 +42,17 @@ export default function TopBar() {
       // UPDATED QUERY: 
       // Listen ONLY for messages where isAdmin is true (Admin replies) 
       // and read is false.
-      const q = query(
+      const qMessages = query(
         collection(db, "messages"),
         where("email", "==", currentUserEmail),
         where("isAdmin", "==", true),
         where("read", "==", false)
       );
 
-      const unsub = onSnapshot(q, (snap) => {
+      const unsubMessages = onSnapshot(qMessages, (snap) => {
         setUnreadMessages(snap.size);
 
         snap.docChanges().forEach((change) => {
-          // added type AND !hasPendingWrites ensures it only triggers 
-          // for data coming from the SERVER (the Admin), not the local user.
           if (change.type === "added" && !snap.metadata.hasPendingWrites) {
             const data = change.doc.data();
             setToastText(data.content || "New message from Support!");
@@ -63,7 +62,20 @@ export default function TopBar() {
         });
       });
 
-      return () => unsub();
+      const qNotifications = query(
+        collection(db, "notifications"),
+        where("userEmail", "==", currentUserEmail),
+        where("isRead", "==", false)
+      );
+
+      const unsubNotifications = onSnapshot(qNotifications, (snap) => {
+        setUnreadNotifications(snap.size);
+      });
+
+      return () => {
+        unsubMessages();
+        unsubNotifications();
+      };
     }
 
     const handleClickOutside = (event: MouseEvent) => {
@@ -118,6 +130,17 @@ export default function TopBar() {
         ) : (
           <div style={{ display: "flex", alignItems: "center", gap: "18px" }}>
             
+            <div 
+              style={navStyles.iconWrapper} 
+              onClick={() => router.push("/notifications")}
+              title="Notifications"
+            >
+              <Bell size={22} color={darkText} strokeWidth={2} />
+              {unreadNotifications > 0 && (
+                <div style={navStyles.notificationBadge}>{unreadNotifications}</div>
+              )}
+            </div>
+
             <div 
               style={navStyles.iconWrapper} 
               onClick={() => router.push("/messages")}

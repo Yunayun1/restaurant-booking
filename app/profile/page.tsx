@@ -30,6 +30,8 @@ export default function ProfilePage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [bookings, setBookings] = useState<any[]>([]);
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [unreadNotificationCount, setUnreadNotificationCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [editName, setEditName] = useState(false);
   const [name, setName] = useState("");
@@ -54,8 +56,20 @@ export default function ProfilePage() {
           where("email", "==", parsedUser.email)
         );
 
-        const snapshot = await getDocs(q);
-        const data = snapshot.docs.map(d => ({
+        const [bookingSnapshot, notificationSnapshot] = await Promise.all([
+          getDocs(q),
+          getDocs(query(
+            collection(db, "notifications"),
+            where("userEmail", "==", parsedUser.email),
+          ))
+        ]);
+
+        const data = bookingSnapshot.docs.map(d => ({
+          id: d.id,
+          ...d.data()
+        }));
+
+        const notificationsData = notificationSnapshot.docs.map(d => ({
           id: d.id,
           ...d.data()
         }));
@@ -66,6 +80,10 @@ export default function ProfilePage() {
         );
 
         setBookings(data);
+        setNotifications(notificationsData);
+        setUnreadNotificationCount(
+          notificationsData.filter((n: any) => n.isRead === false).length
+        );
       } catch (err) {
         console.error(err);
       } finally {
@@ -141,6 +159,15 @@ return (
             </h2>
           )}
           <p className={styles.userEmail}>{user.email}</p>
+          {unreadNotificationCount > 0 && (
+            <div className={styles.notificationPill}>
+              {unreadNotificationCount} new notification{unreadNotificationCount === 1 ? "" : "s"}
+            </div>
+          )}
+          <div className={styles.actionButtonRow}>
+            <button className={styles.chatButton} onClick={() => router.push("/messages")}>Chatbot Support</button>
+            <button className={styles.notifyButton} onClick={() => router.push("/notifications")}>View Notifications</button>
+          </div>
         </div>
       </div>
 
@@ -168,13 +195,22 @@ return (
               <div className={`
                 ${styles.statusChip} 
                 ${b.status === "Pending" ? styles.statusPending : 
-                  b.status === "Complete" ? styles.statusComplete : styles.statusRejected}
+                  b.status === "Approved" ? styles.statusComplete : styles.statusRejected}
               `}>
                 {b.status === "Pending" && <Hourglass size={14} />}
-                {b.status === "Complete" && <CheckCircle2 size={14} />}
+                {b.status === "Approved" && <CheckCircle2 size={14} />}
                 {b.status === "Rejected" && <XCircle size={14} />}
                 <span>{b.status}</span>
               </div>
+
+              {notifications.some((n: any) => n.bookingId === b.id) && (
+                <button
+                  onClick={() => router.push("/notifications")}
+                  className={styles.notificationLinkButton}
+                >
+                  View restaurant confirmation
+                </button>
+              )}
 
               <button onClick={() => deleteBooking(b.id)} className={styles.deleteBtn}>
                 <Trash2 size={20} />

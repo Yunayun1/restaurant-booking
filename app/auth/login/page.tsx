@@ -14,7 +14,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   // Admin credentials
-  const ADMIN_EMAIL = "admin@example.com";
+  const ADMIN_EMAIL = "admin@gmail.com";
   const ADMIN_PASSWORD = "123456"; 
 
   async function handleLogin(e: React.FormEvent) {

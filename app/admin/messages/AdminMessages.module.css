@@ -38,7 +38,7 @@
 }
 
 .userTab:hover {
-  background: #fff7ed;
+  background: #fdf3b7;
 }
 
 .activeTab {
@@ -94,7 +94,7 @@
 
 .adminMsg .msgBubble {
   background: #ffb600;
-  color: #ffffff;
+  color: #1a1a1a;
   border-radius: 15px 15px 0 15px;
 }
 
@@ -111,6 +111,7 @@
   padding: 12px 16px;
   border: 1px solid #e2e8f0;
   border-radius: 8px;
+  color: #1a1a1a;
   outline: none;
 }
 
