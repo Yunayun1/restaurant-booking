@@ -47,9 +47,9 @@ const styles = {
 };
 
 const hoursData = [
-  { day: "Monday - Friday", time: "9:00 AM - 8:00 PM", active: true },
-  { day: "Saturday", time: "Closed", active: false },
-  { day: "Sunday", time: "Closed", active: false },
+  { day: "Monday - Friday", time: "10:00 AM - 10:00 PM", active: true },
+  { day: "Saturday", time: "10:00 AM - 10:00 PM", active: true },
+  { day: "Sunday", time: "10:00 AM - 10:00 PM", active: true },
 ];
 
 const contactData = [
