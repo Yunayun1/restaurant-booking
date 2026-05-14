@@ -14,6 +14,7 @@ interface MenuItem {
   status: "Available" | "Out of Stock";
   image: string;
   description: string;
+  tag?: "New" | "Recommended" | "Famous"; // ✅ NEW
 }
 
 export default function DigitalMenuPage() {
@@ -32,6 +33,7 @@ export default function DigitalMenuPage() {
     status: "Available",
     image: "",
     description: "",
+    tag: "", // ✅ NEW
   });
 
   const fetchItems = async () => {
@@ -62,6 +64,7 @@ export default function DigitalMenuPage() {
         status: item.status,
         image: item.image,
         description: item.description,
+        tag: item.tag || "", // ✅ NEW
       });
     } else {
       setEditingItem(null);
@@ -72,6 +75,7 @@ export default function DigitalMenuPage() {
         status: "Available",
         image: "",
         description: "",
+        tag: "", // ✅ NEW
       });
     }
     setIsModalOpen(true);
@@ -91,7 +95,13 @@ export default function DigitalMenuPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const itemData = { ...formData, price: parseFloat(formData.price) };
+
+    const itemData = {
+      ...formData,
+      price: parseFloat(formData.price),
+      tag: formData.tag || null, // ✅ CLEAN DATA
+    };
+
     try {
       if (editingItem) {
         await updateDoc(doc(db, "menuItems", editingItem.id), itemData);
@@ -164,13 +174,14 @@ export default function DigitalMenuPage() {
               <th>Category</th>
               <th>Price</th>
               <th>Status</th>
+              <th>Tag</th> {/* ✅ NEW COLUMN */}
               <th>Actions</th>
             </tr>
           </thead>
 
           <tbody>
             {loading ? (
-              <tr><td colSpan={6} style={{ textAlign: 'center', padding: '2rem' }}>Loading items...</td></tr>
+              <tr><td colSpan={7} style={{ textAlign: 'center', padding: '2rem' }}>Loading items...</td></tr>
             ) : filteredItems.map(item => (
               <tr key={item.id}>
                 <td>
@@ -194,6 +205,12 @@ export default function DigitalMenuPage() {
                     {item.status}
                   </button>
                 </td>
+
+                {/* ✅ SHOW TAG */}
+                <td>
+                  {item.tag ? <span>{item.tag}</span> : "-"}
+                </td>
+
                 <td>
                   <div className={styles.actions}>
                     <button onClick={() => handleOpenModal(item)} title="Edit">
@@ -238,6 +255,7 @@ export default function DigitalMenuPage() {
                   >
                     <option value="Food">Food</option>
                     <option value="Drink">Drink</option>
+                    <option value="Dessert">Dessert</option>
                   </select>
                 </div>
 
@@ -251,6 +269,20 @@ export default function DigitalMenuPage() {
                     onChange={(e) => setFormData({...formData, price: e.target.value})}
                   />
                 </div>
+              </div>
+
+              {/* ✅ TAG DROPDOWN */}
+              <div className={styles.formGroup}>
+                <label>Tag</label>
+                <select
+                  value={formData.tag}
+                  onChange={(e) => setFormData({...formData, tag: e.target.value})}
+                >
+                  <option value="">None</option>
+                  <option value="New">New</option>
+                  <option value="Recommended">Recommended</option>
+                  <option value="Famous">Famous</option>
+                </select>
               </div>
 
               <div className={styles.formGroup}>

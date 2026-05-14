@@ -1,88 +1,112 @@
 "use client";
-import React from "react";
-import { 
-  LayoutDashboard, 
-  CalendarCheck, 
-  Settings2, 
-  TableProperties, 
-  UtensilsCrossed, 
-  MessageSquareHeart, 
-  MessageSquare, // Added for Guest Messages
-  History, 
-  LogOut, 
-  ShieldCheck ,
-  Shield
-} from "lucide-react";
-import styles from "./Admin.module.css";
-import { useRouter, usePathname } from "next/navigation";
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+import React, { useEffect, useState } from "react";
+import {
+  LayoutDashboard,
+  CalendarCheck,
+  MessageSquare,
+  Shield,
+  LogOut,
+  TableProperties,
+  UtensilsCrossed,
+  ChevronRight,
+} from "lucide-react";
+
+import { useRouter, usePathname } from "next/navigation";
+import styles from "./Admin.module.css";
+
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const router = useRouter();
   const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
 
-  // Categorized Menu Items
+  // Updated Menu: Removed 'desc' to clean up the UI
   const primaryMenu = [
-    { name: "Live Bookings", icon: <LayoutDashboard size={20} />, path: "/admin/dashboard", desc: "Overview" },
-    { name: "Manage Bookings", icon: <CalendarCheck size={20} />, path: "/admin/booking", desc: "Approve / Reject" },
-    { 
-      name: "Guest Messages", 
-      icon: <MessageSquare size={20} />, 
-      path: "/admin/messages", 
-      desc: "Customer Chat" 
-    },
-    { name: "Reservations", icon: <CalendarCheck size={20} />, path: "/admin/reservation", desc: "Edit / Cancel" },
-    { name: "Tables", icon: <TableProperties size={20} />, path: "/admin/table", desc: "Availability" },
+    { name: "Live Bookings", icon: <LayoutDashboard size={22} />, path: "/admin/dashboard" },
+    { name: "Manage Bookings", icon: <CalendarCheck size={22} />, path: "/admin/booking" },
+    { name: "Guest Messages", icon: <MessageSquare size={22} />, path: "/admin/messages" },
+    { name: "Reservations", icon: <CalendarCheck size={22} />, path: "/admin/reservation" },
+    { name: "Tables", icon: <TableProperties size={22} />, path: "/admin/table" },
   ];
 
   const managementMenu = [
-    { name: "Digital Menu", icon: <UtensilsCrossed size={20} />, path: "/admin/menu" },
-    { name: "Feedback", icon: <MessageSquareHeart size={20} />, path: "/admin/feedback" },
-    { name: "Analytics", icon: <History size={20} />, path: "/admin/history" },
-    { name: "Manage Admins", icon: <Shield size={20} />, path: "/admin/manage" },
+    { name: "Digital Menu", icon: <UtensilsCrossed size={22} />, path: "/admin/menu" },
+    { name: "Manage Admins", icon: <Shield size={22} />, path: "/admin/manage" },
   ];
+
+  const isLoginPage = pathname === "/admin";
+
+  useEffect(() => {
+    setMounted(true);
+    const isAdmin = localStorage.getItem("admin");
+    if (!isAdmin && !isLoginPage) {
+      router.push("/admin");
+    }
+  }, [isLoginPage, router]);
+
+  if (!mounted) return null;
+
+  if (isLoginPage) return <>{children}</>;
 
   return (
     <div className={styles.adminWrapper}>
       <aside className={styles.sidebar}>
         <div className={styles.brand}>
-          <div className={styles.logoIcon}><ShieldCheck size={24} /></div>
-          <h2>Booking<span>Res</span></h2>
+          <div className={styles.logoIcon}>
+            <UtensilsCrossed size={20} />
+          </div>
+          <h2 className={styles.brandTitle}>Admin<span>Panel</span></h2>
         </div>
 
-        <nav className={styles.nav}>
-          {/* Section 1: Operations */}
+        <div className={styles.navContainer}>
           <p className={styles.sectionLabel}>Operations</p>
-          {primaryMenu.map((item) => (
-            <div 
-              key={item.name}
-              className={`${styles.navItem} ${pathname === item.path ? styles.active : ""}`}
-              onClick={() => router.push(item.path)}
-            >
-              {item.icon}
-              <div className={styles.navText}>
-                <span className={styles.navName}>{item.name}</span>
+          <nav className={styles.nav}>
+            {primaryMenu.map((item) => (
+              <div
+                key={item.path}
+                className={`${styles.navItem} ${pathname === item.path ? styles.active : ""}`}
+                onClick={() => router.push(item.path)}
+              >
+                <div className={styles.iconBox}>{item.icon}</div>
+                <div className={styles.navText}>
+                  <span className={styles.navName}>{item.name}</span>
+                </div>
+                {pathname === item.path && <ChevronRight size={16} className={styles.arrow} />}
               </div>
-            </div>
-          ))}
+            ))}
+          </nav>
 
-          {/* Section 2: Management */}
-          <p className={styles.sectionLabel} style={{marginTop: '30px'}}>Management</p>
-          {managementMenu.map((item) => (
-            <div 
-              key={item.name}
-              className={`${styles.navItem} ${pathname === item.path ? styles.active : ""}`}
-              onClick={() => router.push(item.path)}
-            >
-              {item.icon}
-              <span className={styles.navName}>{item.name}</span>
-            </div>
-          ))}
-        </nav>
+          <p className={`${styles.sectionLabel} ${styles.mt}`}>System Management</p>
+          <nav className={styles.nav}>
+            {managementMenu.map((item) => (
+              <div
+                key={item.path}
+                className={`${styles.navItem} ${pathname === item.path ? styles.active : ""}`}
+                onClick={() => router.push(item.path)}
+              >
+                <div className={styles.iconBox}>{item.icon}</div>
+                <div className={styles.navText}>
+                  <span className={styles.navName}>{item.name}</span>
+                </div>
+              </div>
+            ))}
+          </nav>
+        </div>
 
         <div className={styles.sidebarFooter}>
-          <button className={styles.logoutBtn} onClick={() => router.push("/")}>
+          <button
+            className={styles.logoutBtn}
+            onClick={() => {
+              localStorage.removeItem("admin");
+              router.push("/admin");
+            }}
+          >
             <LogOut size={18} />
-            <span>Sign Out</span>
+            Logout Session
           </button>
         </div>
       </aside>
@@ -90,16 +114,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <main className={styles.mainArea}>
         <header className={styles.topNav}>
           <div className={styles.pageTitleContext}>
-             <p>Organization / <strong>Admin Dashboard</strong></p>
+            <p>Portal / <strong>{primaryMenu.find(m => m.path === pathname)?.name || "Management"}</strong></p>
           </div>
           <div className={styles.adminProfile}>
-            <div className={styles.badge}>PRO PLAN</div>
             <div className={styles.avatar}>A</div>
+            <span className={styles.badge}>Master Admin</span>
           </div>
         </header>
-        <div className={styles.contentScroll}>
+        
+        <section className={styles.contentScroll}>
           {children}
-        </div>
+        </section>
       </main>
     </div>
   );

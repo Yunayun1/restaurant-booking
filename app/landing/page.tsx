@@ -1,279 +1,202 @@
 "use client";
-import React, { useState } from "react";
+
+import React from 'react';
 import { useRouter } from "next/navigation";
-import { 
-  Phone, Mail, MapPin, Clock, 
-  ChevronRight, Facebook, Instagram, Twitter 
-} from "lucide-react";
-import TopBar from "./TopBar"; // Ensure this path matches your project
+import { ChefHat, Truck, Leaf, Instagram, Facebook, Twitter, Clock, MapPin } from 'lucide-react';
+import TopBar from "./TopBar"; 
 
-const styles = {
-  primaryTextColor: "#1a1a1a",
-  accentColor: "#ffb400",
-  secondaryTextColor: "#64748b",
-  
-  card: {
-    backgroundColor: "#ffffff",
-    borderRadius: "24px",
-    padding: "35px",
-    boxShadow: "0 10px 40px rgba(0,0,0,0.03)",
-    border: "1px solid #f1f5f9",
-    transition: "transform 0.3s ease",
-  } as React.CSSProperties,
-
-  primaryButton: {
-    backgroundColor: "#ffb400",
-    padding: "18px 45px",
-    borderRadius: "14px",
-    border: "none",
-    fontSize: "1.1rem",
-    fontWeight: "700",
-    cursor: "pointer",
-    color: "#1a1a1a",
-    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-    display: "flex",
-    alignItems: "center",
-    gap: "10px",
-    boxShadow: "0 10px 25px rgba(255, 180, 0, 0.25)",
-  } as React.CSSProperties,
-
-  sectionHeading: {
-    fontSize: "2.2rem",
-    fontWeight: "900",
-    marginBottom: "16px",
-    letterSpacing: "-0.03em",
-    color: "#1a1a1a",
-  } as React.CSSProperties
-};
-
-const hoursData = [
-  { day: "Monday - Friday", time: "10:00 AM - 10:00 PM", active: true },
-  { day: "Saturday", time: "10:00 AM - 10:00 PM", active: true },
-  { day: "Sunday", time: "10:00 AM - 10:00 PM", active: true },
-];
-
-const contactData = [
-  { icon: Phone, text: "+855 123 456 789", label: "Phone" },
-  { icon: Mail, text: "bookinres@gmail.com", label: "Email" },
-  { icon: MapPin, text: "123 Phnom Penh, Cambodia", label: "Address" },
-];
-
-export default function LandingPage() {
+export default function PizzaHousUI() {
   const router = useRouter();
-  const [hoveredImg, setHoveredImg] = useState<number | null>(null);
+  const primaryAccent = "#ffb400";
+  const darkText = "#1a1a1a";
 
-  // ✅ SMART BOOKING REDIRECT LOGIC
   const handleBookingClick = () => {
     const storedUser = localStorage.getItem("user");
-
     if (storedUser) {
-      // User is already logged in, go straight to booking
       router.push("/booking");
     } else {
-      // User is not logged in, save their intent and go to login
       localStorage.setItem("redirectAfterLogin", "/booking");
       router.push("/auth/login");
     }
   };
 
+  const handleMenuClick = () => {
+    router.push("/menu");
+  };
+
   return (
-    <div style={{ backgroundColor: "#fdfdfd", minHeight: "100vh", fontFamily: "'Inter', sans-serif" }}>
+    <div className="min-h-screen font-sans selection:bg-yellow-200" style={{ color: darkText, backgroundColor: '#fdfdfd' }}>
+      
       <TopBar />
 
-      {/* 🌟 CENTERED HERO SECTION */}
-      <div style={{ 
-        position: "relative", 
-        height: "90vh", 
-        overflow: "hidden", 
-        display: "flex", 
-        alignItems: "center", 
-        justifyContent: "center" 
-      }}>
-        {/* Background Image with Overlay */}
-        <div style={{
-          position: "absolute", inset: 0,
-          backgroundImage: "url('/image.jpg')",
-          backgroundSize: "cover", 
-          backgroundPosition: "center",
-          filter: "brightness(0.55)"
-        }} />
-        
-        {/* Hero Content Wrapper */}
-        <div style={{ 
-          position: "relative", 
-          zIndex: 10, 
-          width: "100%", 
-          maxWidth: "900px", 
-          margin: "0 auto", 
-          padding: "0 20px",
-          textAlign: "center",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center"
-        }}>
-          <span style={{ 
-            color: styles.accentColor, 
-            fontWeight: "800", 
-            letterSpacing: "4px", 
-            fontSize: "0.85rem",
-            marginBottom: "15px",
-            display: "block"
-          }}>
-            PREMIUM EXPERIENCE
+      {/* Hero Section */}
+      <section className="relative h-[90vh] md:h-screen flex items-center justify-center text-white overflow-hidden bg-black">
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/70 z-10" />
+        <div className="absolute inset-0 w-full h-full">
+          <img 
+            src="/image.jpg" 
+            alt="Restaurant Atmosphere" 
+            className="w-full h-full object-cover animate-slow-zoom"
+          />
+        </div>
+
+        <div className="relative z-20 text-center px-6 max-w-4xl">
+          {/* ✅ Updated Quote: Focus on the Vibe */}
+          <span className="block text-lg md:text-2xl font-serif italic mb-2 md:mb-4 tracking-wide" style={{ color: primaryAccent }}>
+            Curating your perfect evening
           </span>
-          
-          <h1 style={{ 
-            fontSize: "clamp(2.5rem, 8vw, 4.5rem)", 
-            fontWeight: "900", 
-            color: "white", 
-            lineHeight: "1.1", 
-            marginBottom: "24px",
-            textShadow: "0 4px 30px rgba(0,0,0,0.2)"
-          }}>
-            Taste the <span style={{ color: styles.accentColor }}>Extraordinary</span>
+          {/* ✅ Updated Headline: Focus on Booking & Discovery */}
+          <h1 className="text-5xl md:text-9xl font-black uppercase leading-[0.9] mb-8 drop-shadow-2xl">
+            Reserve <br className="hidden md:block"/> Your Table
           </h1>
-          
-          <p style={{ 
-            color: "rgba(255,255,255,0.9)", 
-            fontSize: "clamp(1rem, 4vw, 1.25rem)", 
-            marginBottom: "48px", 
-            lineHeight: "1.7",
-            maxWidth: "650px"
-          }}>
-            Experience world-class dining with the easiest reservation system in Phnom Penh. 
-            Join us for an unforgettable culinary journey.
-          </p>
-          
-          {/* ✅ UPDATED BUTTON */}
-          <button 
-            onClick={handleBookingClick}
-            style={styles.primaryButton}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-5px)";
-              e.currentTarget.style.backgroundColor = "#f0a600";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.backgroundColor = styles.accentColor;
-            }}
-          >
-            Book Now <ChevronRight size={22} />
-          </button>
-        </div>
-
-        {/* Decorative Side Label */}
-        <div style={{
-          position: "absolute",
-          left: "30px",
-          bottom: "100px",
-          transform: "rotate(-90deg)",
-          transformOrigin: "left bottom",
-          color: "rgba(255,255,255,0.3)",
-          letterSpacing: "5px",
-          fontSize: "0.7rem",
-          fontWeight: "700"
-        }}>
-          EST. 2026
-        </div>
-      </div>
-
-      {/* 📋 INFO CARDS SECTION */}
-      <div style={{ maxWidth: "1100px", margin: "-100px auto 0", padding: "0 20px", position: "relative", zIndex: 20 }}>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "24px" }}>
-          
-          {/* Hours Card */}
-          <div style={styles.card}>
-            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "24px" }}>
-              <div style={{ backgroundColor: "#fffbeb", padding: "10px", borderRadius: "12px" }}>
-                <Clock color={styles.accentColor} size={24} />
-              </div>
-              <h3 style={{ margin: 0, fontSize: "1.25rem", fontWeight: "800" }}>Opening Hours</h3>
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-              {hoursData.map((item, i) => (
-                <div key={i} style={{ 
-                  display: "flex", justifyContent: "space-between", 
-                  paddingBottom: "12px", borderBottom: i !== hoursData.length - 1 ? "1px solid #f8fafc" : "none" 
-                }}>
-                  <span style={{ fontWeight: "600", color: item.active ? "#1a1a1a" : "#94a3b8" }}>{item.day}</span>
-                  <span style={{ color: item.active ? "#2563eb" : "#94a3b8", fontWeight: "700" }}>{item.time}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Contact Card */}
-          <div style={{ ...styles.card, backgroundColor: styles.primaryTextColor, color: "white" }}>
-            <h3 style={{ fontSize: "1.25rem", fontWeight: "800", marginBottom: "30px" }}>Visit Us</h3>
-            {contactData.map((item, i) => (
-              <div key={i} style={{ display: "flex", gap: "18px", marginBottom: "24px" }}>
-                <item.icon size={20} color={styles.accentColor} />
-                <div>
-                  <div style={{ fontSize: "0.75rem", color: "#94a3b8", textTransform: "uppercase", letterSpacing: "1px" }}>{item.label}</div>
-                  <div style={{ fontSize: "1rem", fontWeight: "500", marginTop: "2px" }}>{item.text}</div>
-                </div>
-              </div>
-            ))}
-            <div style={{ display: "flex", gap: "20px", marginTop: "30px", opacity: 0.8 }}>
-               <Facebook size={20} style={{ cursor: 'pointer' }} />
-               <Instagram size={20} style={{ cursor: 'pointer' }} />
-               <Twitter size={20} style={{ cursor: 'pointer' }} />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 🖼️ BENTO GALLERY */}
-      <div style={{ maxWidth: "1100px", margin: "100px auto", padding: "0 20px" }}>
-        <div style={{ textAlign: "center", marginBottom: "60px" }}>
-          <h2 style={styles.sectionHeading}>Photo Gallery</h2>
-          <div style={{ width: "60px", height: "4px", backgroundColor: styles.accentColor, margin: "0 auto", borderRadius: "2px" }} />
-        </div>
-
-        <div style={{ 
-          display: "grid", 
-          gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", 
-          gridAutoRows: "240px",
-          gap: "20px" 
-        }}>
-          {[1, 2, 3, 4, 5, 6].map((img, i) => (
-            <div 
-              key={i} 
-              onMouseEnter={() => setHoveredImg(i)}
-              onMouseLeave={() => setHoveredImg(null)}
-              style={{
-                gridColumn: i === 0 ? "span 2" : "span 1",
-                gridRow: i === 0 ? "span 2" : "span 1",
-                borderRadius: "28px",
-                overflow: "hidden",
-                position: "relative",
-                cursor: "pointer",
-                boxShadow: "0 20px 40px rgba(0,0,0,0.06)"
-              }}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button 
+              onClick={handleBookingClick}
+              className="px-10 py-4 font-black text-xs uppercase tracking-[0.3em] transition-all bg-white text-black hover:bg-transparent hover:text-white border-2 border-white"
             >
-              <img 
-                src={`/res${i+1}.jpg`} 
-                alt="Restaurant" 
-                style={{ 
-                  width: "100%", height: "100%", objectFit: "cover", 
-                  transition: "transform 0.6s cubic-bezier(0.33, 1, 0.68, 1)",
-                  transform: hoveredImg === i ? "scale(1.08)" : "scale(1)"
-                }}
-              />
+              Booking Now
+            </button>
+            <button 
+              onClick={handleMenuClick}
+              className="px-10 py-4 font-black text-xs uppercase tracking-[0.3em] transition-all border-2 border-white/30 hover:border-white text-white"
+            >
+              Explore Menu
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-24 px-8 bg-white relative z-20">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-16">
+          {[
+            { icon: Leaf, title: "Curated Spaces", desc: "Handpicked locations with the best atmosphere in Phnom Penh." },
+            { icon: ChefHat, title: "Top Rated", desc: "Only the highest-rated restaurants and elite culinary masters." },
+            { icon: Truck, title: "Instant Access", desc: "Real-time availability and instant confirmation for your peace of mind." }
+          ].map((feature, i) => (
+            <div key={i} className="group flex flex-col items-center text-center">
+              <div className="mb-8 w-20 h-20 flex items-center justify-center rounded-full transition-transform duration-500 group-hover:rotate-[360deg]" 
+                   style={{ border: `1px solid ${primaryAccent}44`, backgroundColor: `${primaryAccent}08` }}>
+                <feature.icon size={32} style={{ color: primaryAccent }} strokeWidth={1.5} />
+              </div>
+              <h3 className="text-sm font-black mb-4 uppercase tracking-widest">{feature.title}</h3>
+              <p className="text-gray-500 text-sm leading-relaxed max-w-[250px]">{feature.desc}</p>
             </div>
           ))}
         </div>
-      </div>
+      </section>
 
-      <footer style={{ 
-        textAlign: "center", 
-        padding: "60px 20px", 
-        color: "#94a3b8", 
-        fontSize: "0.85rem", 
-        borderTop: "1px solid #f1f5f9" 
-      }}>
-        &copy; 2026 MYRESTAURANT MANAGEMENT SYSTEM. ALL RIGHTS RESERVED.
+      {/* Table Set Gallery Section */}
+      <section className="py-24 px-6 md:px-12 bg-[#0a0a0a]">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+            <div>
+              <h2 className="text-4xl md:text-6xl font-black text-white uppercase leading-none">Find Your<br/>Atmosphere</h2>
+              <div className="h-1.5 w-24 mt-6" style={{ backgroundColor: primaryAccent }}></div>
+            </div>
+            <p className="text-gray-400 max-w-sm text-sm">Whether it's a romantic date or a business lunch, we have the perfect table set for your story.</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[1, 2, 3, 4, 5, 6].map((num) => (
+              <div key={num} className="group relative aspect-video overflow-hidden bg-zinc-900 rounded-sm">
+                <img 
+                  src={`/res${num}.jpg`} 
+                  alt={`Restaurant Atmosphere ${num}`} 
+                  className="w-full h-full object-cover opacity-70 transition-all duration-700 group-hover:scale-110 group-hover:opacity-100" 
+                />
+                <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500" />
+                <div className="absolute bottom-4 left-4">
+                   <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                     Featured Venue {num}
+                   </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Opening Hours Section */}
+      <section className="py-24 px-6 bg-white">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="inline-block px-4 py-1 mb-6 border border-gray-200 rounded-full">
+            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400">Visit Us Today</span>
+          </div>
+          <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tighter mb-12">
+            Service Hours
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center border-t border-b border-gray-100 py-12">
+            <div className="space-y-2">
+              <p className="text-sm font-bold uppercase tracking-widest text-gray-400">Monday — Sunday</p>
+              <div className="flex flex-col items-center">
+                <span className="text-5xl md:text-7xl font-black" style={{ color: primaryAccent }}>11:00 AM</span>
+                <span className="text-2xl font-bold text-gray-300 my-2">UNTIL</span>
+                <span className="text-5xl md:text-7xl font-black" style={{ color: darkText }}>10:00 PM</span>
+              </div>
+            </div>
+            
+            <div className="text-left md:border-l md:pl-12 border-gray-100">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center text-white">
+                  <Clock size={18} />
+                </div>
+                <div>
+                  <h4 className="text-sm font-black uppercase tracking-widest">Always Available</h4>
+                  <p className="text-xs text-gray-500">Bookings accepted 24/7 online</p>
+                </div>
+              </div>
+              <p className="text-gray-500 text-sm leading-relaxed mb-8">
+                We bridge the gap between you and the best dining spots in the city. Our partners are open daily to welcome you to a world of flavor.
+              </p>
+              <div className="flex items-center gap-2 text-sm font-bold">
+                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                <span className="uppercase tracking-widest text-[10px]">Active Reservation Systems</span>
+              </div>
+            </div>
+          </div>
+          
+          <button 
+            onClick={handleBookingClick}
+            className="mt-12 px-12 py-5 bg-black text-white font-black text-xs uppercase tracking-[0.3em] hover:bg-[#ffb400] transition-colors duration-300"
+          >
+            Find a Restaurant
+          </button>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-16 px-8" style={{ backgroundColor: darkText, color: '#fff' }}>
+        <div className="max-w-6xl mx-auto flex flex-col items-center gap-10">
+          <div className="text-3xl font-black uppercase tracking-tighter">
+            Booking<span style={{ color: primaryAccent }}>Res</span>
+          </div>
+          <div className="flex space-x-10 text-gray-400">
+            <Facebook size={20} className="hover:text-white cursor-pointer transition-colors" />
+            <Twitter size={20} className="hover:text-white cursor-pointer transition-colors" />
+            <Instagram size={20} className="hover:text-white cursor-pointer transition-colors" />
+          </div>
+          <div className="h-px w-full bg-white/10" />
+          <div className="flex flex-col md:flex-row justify-between w-full text-[10px] uppercase tracking-[0.2em] text-gray-500 gap-4">
+            <p>© 2026 BookingRes. Designed for Excellence.</p>
+            <div className="flex gap-6">
+              <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
+              <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+            </div>
+          </div>
+        </div>
       </footer>
+
+      <style jsx>{`
+        @keyframes slow-zoom {
+          0% { transform: scale(1); }
+          100% { transform: scale(1.15); }
+        }
+        .animate-slow-zoom {
+          animation: slow-zoom 30s infinite alternate ease-in-out;
+        }
+      `}</style>
     </div>
   );
 }
