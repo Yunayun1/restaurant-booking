@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { collection, onSnapshot, query } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { Users, Calendar, Clock, Loader2 } from "lucide-react";
+import { getTableCode, getUpcomingTables } from "@/lib/tableHelpers";
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
@@ -18,38 +19,43 @@ export default function AdminDashboard() {
   };
 
   useEffect(() => {
-    // Listen to the entire bookings collection for real-time stats
-    const q = query(collection(db, "bookings"));
-    
-    const unsubscribe = onSnapshot(q, (snapshot) => {
+    const bookingsQuery = query(collection(db, "bookings"));
+    const tablesQuery = query(collection(db, "tables"));
+    let bookingsReady = false;
+    let tablesReady = false;
+
+    const unsubscribeBookings = onSnapshot(bookingsQuery, (snapshot) => {
       const allBookings = snapshot.docs.map(doc => doc.data());
-      
-      // Get today's date string in the same format as your booking data (e.g., "2026-01-02")
       const todayStr = new Date().toISOString().split('T')[0];
 
-      const statsUpdate = {
+      setStats({
         total: allBookings.length,
         today: allBookings.filter((b: any) => b.date === todayStr).length,
         pending: allBookings.filter((b: any) => b.status === "Pending").length,
-      };
+      });
 
-      setStats(statsUpdate);
-      // Compute upcoming bookings (date >= today and not rejected) and sort ascending
-      const upcomingList = (allBookings as any[])
-        .filter(b => b && b.date >= todayStr && b.status !== "Rejected")
-        .sort((a, b) => {
-          const aDate = new Date(`${a.date}T${a.time || '00:00'}`);
-          const bDate = new Date(`${b.date}T${b.time || '00:00'}`);
-          return aDate.getTime() - bDate.getTime();
-        })
-        .slice(0, 3);
+      bookingsReady = true;
+      if (tablesReady) {
+        setLoading(false);
+      }
+    });
+
+    const unsubscribeTables = onSnapshot(tablesQuery, (snapshot) => {
+      const allTables = snapshot.docs.map((doc) => ({ id: doc.id, ...(doc.data() as any) }));
+      const upcomingList = getUpcomingTables(allTables);
 
       setUpcoming(upcomingList);
 
-      setLoading(false);
+      tablesReady = true;
+      if (bookingsReady) {
+        setLoading(false);
+      }
     });
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribeBookings();
+      unsubscribeTables();
+    };
   }, []);
 
   return (
@@ -102,15 +108,16 @@ export default function AdminDashboard() {
           </div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginTop: "8px" }}>
-            {upcoming.map((b, idx) => (
-              <div key={idx} style={{ background: "#fff7eb", padding: "16px 20px", borderRadius: "14px", border: "1px solid #fae6c9", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            {upcoming.map((b) => (
+              <div key={b.id || `${b.date}-${b.time}-${b.customerName}`}
+                style={{ background: "#fff7eb", padding: "16px 20px", borderRadius: "14px", border: "1px solid #fae6c9", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <div>
                   <div style={{ fontSize: "14px", fontWeight: 800, color: "#1b1b1b" }}>{b.date} {b.time ? ` ${b.time}` : ""}</div>
-                  <div style={{ marginTop: "6px", color: "#3f3f3f", fontWeight: 700 }}>{getDisplayName(b.name, b.email)}</div>
+                  <div style={{ marginTop: "6px", color: "#3f3f3f", fontWeight: 700 }}>{getDisplayName(b.customerName || b.name, b.email)}</div>
                 </div>
 
                 <div style={{ textAlign: "right" }}>
-                  <div style={{ fontWeight: 800, color: "#8a4b08" }}>{b.tableNumber || "—"} · {b.people} guests</div>
+                  <div style={{ fontWeight: 800, color: "#8a4b08" }}>{getTableCode(b)} · {(b.capacity ?? b.people ?? 0)} guests</div>
                 </div>
               </div>
             ))}

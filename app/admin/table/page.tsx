@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, serverTimestamp, query, orderBy } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import styles from "./table.module.css";
+import { getTableCode, getUpcomingTables } from "@/lib/tableHelpers";
 
 interface Table {
   id?: string;
@@ -192,8 +193,6 @@ export default function TableManagement() {
     fetchTables();
   };
 
-  const getTableCode = (table: Table) => table.tableCode ?? (table.number ? `TB-${String(table.number).padStart(2, '0')}` : "TB-00");
-
   // Filter tables by floor
   const filteredTables = tables.filter(t => floorFilter === "All" || t.floor === floorFilter);
 
@@ -234,13 +233,7 @@ export default function TableManagement() {
     };
   });
 
-  const now = new Date();
-  const upcomingTables = filteredTables
-    .filter((table) => {
-      const tableDate = new Date(`${table.date}T${table.time}`);
-      return tableDate >= now;
-    })
-    .sort((a, b) => new Date(`${a.date}T${a.time}`).getTime() - new Date(`${b.date}T${b.time}`).getTime());
+  const upcomingTables = getUpcomingTables(filteredTables);
 
   return (
     <div className={styles.container}>
