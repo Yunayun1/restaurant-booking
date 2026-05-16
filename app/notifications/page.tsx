@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { collection, query, where, orderBy, onSnapshot, updateDoc, doc, Timestamp } from "firebase/firestore";
+import { collection, query, where, onSnapshot, updateDoc, doc, Timestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import TopBar from "@/app/landing/TopBar";
 import styles from "./notifications.module.css";
@@ -15,8 +15,7 @@ export default function NotificationsPage() {
     const user = JSON.parse(stored);
     const q = query(
       collection(db, "notifications"),
-      where("userEmail", "==", user.email),
-      orderBy("createdAt", "desc")
+      where("userEmail", "==", user.email)
     );
 
     const unsub = onSnapshot(q, (snap) => {
@@ -27,6 +26,9 @@ export default function NotificationsPage() {
           : new Date();
         return { id: d.id, ...raw, createdAt };
       });
+
+      // Sort client-side by createdAt descending to avoid requiring a composite index
+      loaded.sort((a, b) => (b.createdAt?.getTime?.() || 0) - (a.createdAt?.getTime?.() || 0));
 
       setNotifications(loaded);
 

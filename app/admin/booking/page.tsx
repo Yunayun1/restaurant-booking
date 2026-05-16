@@ -21,6 +21,9 @@ interface Booking {
 }
 
 export default function AdminBookingsPage() {
+  const getDisplayName = (name?: string, email?: string) => {
+    return name && name.trim() !== "" ? name : (email ? email.split("@")[0] : "Guest");
+  };
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
@@ -56,35 +59,15 @@ export default function AdminBookingsPage() {
       await updateDoc(bookingRef, { status });
 
       // 2. CREATE RESERVATION NOTIFICATION FOR CUSTOMER
+      const displayName = getDisplayName(booking.name, booking.email);
       await addDoc(collection(db, "notifications"), {
         userEmail: booking.email,
         bookingId: booking.id,
-        title:
-          status === "Approved"
-            ? "Reservation Confirmed"
-            : "Reservation Rejected",
+        title: status === "Approved" ? "Reservation Confirmed" : "Reservation Rejected",
         message:
           status === "Approved"
-            ? `Your reservation at Royal Restaurant is confirmed.
-
-Hi ${booking.name},
-
-Thank you for booking with us.
-
-Reservation details:
-Date: ${booking.date}
-Time: ${booking.time}
-Guests: ${booking.people}
-Phone: ${booking.phone}
-
-We look forward to serving you.`
-            : `Reservation rejected.
-
-Hi ${booking.name},
-
-We are sorry to inform you that your reservation request for ${booking.date} at ${booking.time} could not be approved.
-
-Please try another time slot or contact the restaurant directly.`,
+            ? `Your reservation at Our Restaurant is confirmed.\n\nHi ${displayName},\n\nThank you for booking with us.\n\nReservation details:\nDate: ${booking.date}\nTime: ${booking.time}\nGuests: ${booking.people}\nPhone: ${booking.phone}\n\nWe look forward to serving you.`
+            : `Reservation rejected.\n\nHi ${displayName},\n\nWe are sorry to inform you that your reservation request for ${booking.date} at ${booking.time} could not be approved.\n\nPlease try another time slot or contact the restaurant directly.`,
         status,
         type: "reservation",
         isRead: false,
@@ -110,8 +93,9 @@ Please try another time slot or contact the restaurant directly.`,
   };
 
   const filteredBookings = bookings.filter((b) => {
-    const matchesSearch = b.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                         b.email.toLowerCase().includes(searchTerm.toLowerCase());
+    const searchLower = searchTerm.toLowerCase();
+    const nameOrEmail = (b.name || b.email || "").toLowerCase();
+    const matchesSearch = nameOrEmail.includes(searchLower);
     const matchesStatus = filterStatus === "All" || b.status === filterStatus;
     return matchesSearch && matchesStatus;
   });
@@ -171,7 +155,7 @@ Please try another time slot or contact the restaurant directly.`,
               <tr key={b.id} className={styles.row}>
                 <td>
                   <div className={styles.customerBox}>
-                    <span className={styles.customerName}>{b.name}</span>
+                    <span className={styles.customerName}>{getDisplayName(b.name, b.email)}</span>
                     <span className={styles.customerEmail}>{b.email}</span>
                   </div>
                 </td>

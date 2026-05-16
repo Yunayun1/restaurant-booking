@@ -376,6 +376,11 @@
   font-weight: 600;
 }
 
+.tableMeta {
+  font-size: 0.85rem;
+  color: #7b5f2e;
+}
+
 .statusPill {
   display: inline-flex;
   align-items: center;

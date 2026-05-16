@@ -14,7 +14,11 @@ export const registerUser = async (username: string, email: string, password: st
     createdAt: new Date(),
   });
 
-  return user;
+  return {
+    uid: user.uid,
+    email: user.email,
+    name: username,
+  };
 };
 
 export const loginUser = async (email: string, password: string) => {

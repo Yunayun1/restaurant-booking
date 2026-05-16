@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from "firebase/firestore";
+import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, serverTimestamp, query, orderBy } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import styles from "./table.module.css";
 
@@ -15,6 +15,7 @@ interface Table {
   date: string;
   time: string;
   status: "Available" | "Booked" | "Arrived" | "Complete";
+  createdAt?: any;
 }
 
 const FLOORS = ["All", "First", "Second"];
@@ -72,8 +73,15 @@ export default function TableManagement() {
   // Fetch tables
   const fetchTables = async () => {
     setLoading(true);
-    const snapshot = await getDocs(collection(db, "tables"));
-    const data: Table[] = snapshot.docs.map(d => ({ id: d.id, ...(d.data() as Table) }));
+    const tablesQuery = query(collection(db, "tables"), orderBy("createdAt", "desc"));
+    const snapshot = await getDocs(tablesQuery);
+    const data: Table[] = snapshot.docs
+      .map(d => ({ id: d.id, ...(d.data() as Table) }))
+      .sort((a, b) => {
+        const aTime = typeof a.createdAt?.toMillis === "function" ? a.createdAt.toMillis() : a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const bTime = typeof b.createdAt?.toMillis === "function" ? b.createdAt.toMillis() : b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return bTime - aTime;
+      });
     setTables(data);
     setLoading(false);
   };
@@ -108,15 +116,32 @@ export default function TableManagement() {
     }
 
     try {
-      await addDoc(collection(db, "tables"), { 
+      const tableDoc = await addDoc(collection(db, "tables"), { 
         tableCode,
         customerName, 
         floor, 
         capacity: partySize, 
         date, 
         time, 
-        status: "Booked" 
+        status: "Booked",
+        createdAt: serverTimestamp(),
       });
+
+      const localCreatedAt = new Date();
+      setTables((prev) => [
+        {
+          id: tableDoc.id,
+          tableCode,
+          customerName,
+          floor,
+          capacity: partySize,
+          date,
+          time,
+          status: "Booked",
+          createdAt: localCreatedAt,
+        },
+        ...prev,
+      ]);
 
       setTableCode("TB-01");
       setCustomerName("");
@@ -174,7 +199,12 @@ export default function TableManagement() {
 
   const floorPlanTables = filteredTables
     .slice()
-    .sort((a, b) => getTableCode(a).localeCompare(getTableCode(b)));
+    .sort((a, b) => {
+      const aTime = typeof a.createdAt?.toMillis === "function" ? a.createdAt.toMillis() : a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const bTime = typeof b.createdAt?.toMillis === "function" ? b.createdAt.toMillis() : b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      if (bTime !== aTime) return bTime - aTime;
+      return getTableCode(a).localeCompare(getTableCode(b));
+    });
 
   const inventoryForFilter = floorFilter === "All"
     ? TABLE_INVENTORY
@@ -366,6 +396,7 @@ export default function TableManagement() {
                     <div key={table.id} className={`${styles.tableCard} ${styles[table.status.toLowerCase()]}`}>
                       <span className={styles.tableNumber}>{getTableCode(table)}</span>
                       <span className={styles.tableLabel}>{table.capacity} seats</span>
+                      <span className={styles.tableMeta}>{table.date} · {table.time}</span>
                       <span className={styles.tableCustomer}>{table.customerName}</span>
                       <span className={styles.statusPill}>{table.status}</span>
                       <button 

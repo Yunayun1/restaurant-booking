@@ -11,6 +11,11 @@ export default function AdminDashboard() {
     pending: 0,
   });
   const [loading, setLoading] = useState(true);
+  const [upcoming, setUpcoming] = useState<any[]>([]);
+
+  const getDisplayName = (name?: string, email?: string) => {
+    return name && name.trim() !== "" ? name : (email ? email.split("@")[0] : "Guest");
+  };
 
   useEffect(() => {
     // Listen to the entire bookings collection for real-time stats
@@ -29,6 +34,18 @@ export default function AdminDashboard() {
       };
 
       setStats(statsUpdate);
+      // Compute upcoming bookings (date >= today and not rejected) and sort ascending
+      const upcomingList = (allBookings as any[])
+        .filter(b => b && b.date >= todayStr && b.status !== "Rejected")
+        .sort((a, b) => {
+          const aDate = new Date(`${a.date}T${a.time || '00:00'}`);
+          const bDate = new Date(`${b.date}T${b.time || '00:00'}`);
+          return aDate.getTime() - bDate.getTime();
+        })
+        .slice(0, 3);
+
+      setUpcoming(upcomingList);
+
       setLoading(false);
     });
 
@@ -70,6 +87,34 @@ export default function AdminDashboard() {
               isWarning={stats.pending > 0}
             />
           </>
+        )}
+      </div>
+
+      {/* Upcoming Guests Section (styled) */}
+      <div style={{ marginTop: "30px" }}>
+        <h2 style={{ fontSize: "13px", marginBottom: "12px", color: "#7b5f2e", textTransform: "uppercase", letterSpacing: "1px" }}>Upcoming</h2>
+
+        {loading ? (
+          <div style={{ color: "#ffb600", display: "flex", alignItems: "center", gap: 8 }}><Loader2 className="animate-spin" /> Loading...</div>
+        ) : upcoming.length === 0 ? (
+          <div style={{ padding: "18px", background: "#fff", borderRadius: "12px", border: "1px solid #f0f0f0" }}>
+            No upcoming reservations.
+          </div>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginTop: "8px" }}>
+            {upcoming.map((b, idx) => (
+              <div key={idx} style={{ background: "#fff7eb", padding: "16px 20px", borderRadius: "14px", border: "1px solid #fae6c9", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div>
+                  <div style={{ fontSize: "14px", fontWeight: 800, color: "#1b1b1b" }}>{b.date} {b.time ? ` ${b.time}` : ""}</div>
+                  <div style={{ marginTop: "6px", color: "#3f3f3f", fontWeight: 700 }}>{getDisplayName(b.name, b.email)}</div>
+                </div>
+
+                <div style={{ textAlign: "right" }}>
+                  <div style={{ fontWeight: 800, color: "#8a4b08" }}>{b.tableNumber || "—"} · {b.people} guests</div>
+                </div>
+              </div>
+            ))}
+          </div>
         )}
       </div>
     </div>

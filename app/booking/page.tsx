@@ -16,6 +16,7 @@ import styles from "./booking.module.css";
 
 interface Booking {
   id: string;
+  name?: string;
   date: string;
   time: string;
   people: number;
@@ -58,16 +59,24 @@ export default function BookingPage() {
   // 2. FETCH FROM FIREBASE
   const fetchUserBookings = async (email: string) => {
     try {
+      // Firestore may require a composite index for where()+orderBy().
+      // To avoid the index requirement, fetch by email and sort client-side.
       const q = query(
         collection(db, "bookings"),
-        where("email", "==", email),
-        orderBy("createdAt", "desc")
+        where("email", "==", email)
       );
       const querySnapshot = await getDocs(q);
       const bookingsData = querySnapshot.docs.map(doc => ({
         id: doc.id,
-        ...doc.data()
+        ...(doc.data() as any)
       })) as Booking[];
+
+      bookingsData.sort((a, b) => {
+        const aTime = typeof (a as any).createdAt?.toMillis === "function" ? (a as any).createdAt.toMillis() : (a as any).createdAt ? new Date((a as any).createdAt).getTime() : 0;
+        const bTime = typeof (b as any).createdAt?.toMillis === "function" ? (b as any).createdAt.toMillis() : (b as any).createdAt ? new Date((b as any).createdAt).getTime() : 0;
+        return bTime - aTime;
+      });
+
       setMyBookings(bookingsData);
     } catch (err) {
       console.error("Error fetching bookings:", err);
@@ -83,7 +92,7 @@ export default function BookingPage() {
     
     const newBookingData = {
       email: user.email,
-      name: user.name || "Guest",
+      name: user.name || user.email?.split("@")[0] || "Guest",
       date: formData.date,
       time: formData.time,
       people: formData.people,
